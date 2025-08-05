@@ -1,5 +1,5 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
-import forms from '@tailwindcss/forms';
+import defaultTheme from 'tailwindcss/defaultTheme'
+import forms from '@tailwindcss/forms'
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -8,6 +8,8 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
     ],
+
+    darkMode: 'class', // ✅ tambahin dark mode
 
     theme: {
         extend: {
@@ -18,4 +20,4 @@ export default {
     },
 
     plugins: [forms],
-};
+}
