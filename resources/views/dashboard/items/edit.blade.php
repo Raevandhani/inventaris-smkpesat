@@ -29,11 +29,12 @@
                         <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="Nama Barang" required value="{{ $items->name }}">
                     </div>
                     <div>
-                        <label for="category" class="block mb-2 text-sm font-medium text-gray-900">Kategori</label>
-                        <select id="category" name="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
-                            <option value="{{ $items->category }}" class="text-gray-400">{{ $items->category }}</option>
-                            <option value="Elektronik">Elektronik</option>
-                            <option value="DLL">DLL</option>
+                        <label for="category_id" class="block mb-2 text-sm font-medium text-gray-900">Kategori</label>
+                        <select id="category_id" name="category_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
+                            <option value="{{ $items->category_id }}" class="text-gray-400">{{ $items->category->name }}</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div>
@@ -44,21 +45,22 @@
                         <label for="condition" class="block mb-2 text-sm font-medium text-gray-900">Kondisi</label>
                         <select id="condition" name="condition" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
                             <option value="{{ $items->condition }}">{{ $items->condition }}</option>
-                            <option value="Elektronik">Elektronik</option>
-                            <option value="DLL">DLL</option>
+                            <option value="Good">Good</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Broken">Broken</option>
                         </select>
                     </div>
                     <div>
                         <label for="status" class="block mb-2 text-sm font-medium text-gray-900">Status</label>
                         <select id="status" name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
                             <option value="{{ $items->status }}">{{ $items->status }}</option>
-                            <option value="Elektronik">Elektronik</option>
-                            <option value="DLL">DLL</option>
+                            <option value="Available">Available</option>
+                            <option value="Unavailable">Unavailable</option>
                         </select>
                     </div>
                 </div>
                 <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-teal-700 rounded-lg focus:ring-4 hover:bg-teal-800">
-                    Tambah Buku
+                    Update Item
                 </button>
             </form>
         </div>

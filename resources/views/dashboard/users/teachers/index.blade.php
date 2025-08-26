@@ -4,12 +4,10 @@
           @foreach ($breadcrumbs as $crumbs)
             @if (!empty($crumbs['url']))
                 <a href="{{ $crumbs['url'] }}" class="hover:underline text-gray-800 transition-all duration-200">
-                  {{ $crumbs['label'] }}
+                    {{ $crumbs['label'] }}
                 </a>
             @else
-              <span class="text-gray-800">
                 {{ $crumbs['label'] }}
-              </span>
             @endif
               
             @if (!$loop->last)
@@ -21,11 +19,7 @@
 
     <div class="px-6 py-4">
         <div class="w-full flex items-center justify-end mb-4">
-          <a href="{{ route('items.create') }}">
-              <button class="px-6 py-2.5 text-white bg-sky-700 hover:bg-sky-800 rounded transition duration-150 text-base font-semibold">
-                ADD ITEM
-              </button>
-          </a>
+          
         </div>
 
         <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3">
@@ -37,36 +31,26 @@
                     <tr>
                       <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">No</th>
                       <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Name</th>
-                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Category</th>
-                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Condition</th>
-                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Available</th>
-                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Unavailable</th>
-                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Total Stock</th>
-                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Status</th>
-                      <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Action</th>
+                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Email</th>
+                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Roles</th>
+                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Action</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-200">
-                    @foreach ($items as $data)
+                    @foreach ($teachers as $data)
                       <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $loop->iteration }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                          {{ $data->category ? $data->category->name : '-' }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->condition }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->available }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->unavailable }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->total_stock }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->status }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->email }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->getRoleNames()->join(', ') }}</td>
                         <td>
-                          <div class="flex justify-end items-center gap-1">
-                            <a href="{{ route('items.edit', $data->id) }}">
+                          <div class="flex items-center gap-1">
+                            <a href="{{ route('users.edit', $data->id) }}">
                               <button class="px-3 py-1 text-sm text-white bg-green-600 hover:bg-green-700 rounded">
                                 Edit
                               </button>
                             </a>
-                            <form action="{{ route('items.destroy', $data->id) }}" method="POST">
+                            <form action="{{ route('users.destroy', $data->id) }}" method="POST">
                               @csrf
                               @method('DELETE')
                               <button class="px-3 py-1 text-sm text-white bg-red-600 hover:bg-red-700 rounded">Delete</button>

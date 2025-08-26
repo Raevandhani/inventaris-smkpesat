@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\BorrowController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\RolesController;
+use App\Http\Controllers\UsersController;
 
 Route::get('/', function () {
     return view('index');
@@ -17,6 +21,48 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::prefix('users')->name('users.')->group(function () {
+    Route::get('students', [UsersController::class, 'students'])->name('students');
+    Route::get('teachers', [UsersController::class, 'teachers'])->name('teachers');
+
+    Route::resource('/', UsersController::class)
+        ->parameters(['' => 'user'])
+        ->names([
+            'index'   => 'index',
+            'create'  => 'create',
+            'store'   => 'store',
+            'show'    => 'show',
+            'edit'    => 'edit',
+            'update'  => 'update',
+            'destroy' => 'destroy',
+        ]);
+});
+
+Route::prefix('borrows')->name('borrows.')->group(function () {
+    Route::get('items', [BorrowController::class, 'items'])->name('items');
+    
+    Route::resource('/', BorrowController::class)
+    ->parameters(['' => 'borrows'])
+    ->names([
+        'index'   => 'index',
+        'create'  => 'create',
+        'store'   => 'store',
+        'edit'    => 'edit',
+        'update'  => 'update',
+        'destroy' => 'destroy',
+    ]);
+    
+    Route::put('{id}/accepted', [BorrowController::class, 'accepted'])->name('accepted');
+    Route::put('{id}/declined', [BorrowController::class, 'declined'])->name('declined');
+    Route::put('{id}/finished', [BorrowController::class, 'finished'])->name('finished');
+});
+
+Route::prefix('/')->group(function () {
+    Route::resource('roles', RolesController::class);
+    Route::resource('categories', CategoryController::class);
+    // Route::resource('location', LocationController::class);
 });
 
 Route::resource('/items', ItemController::class);
