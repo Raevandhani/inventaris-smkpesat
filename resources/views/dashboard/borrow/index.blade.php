@@ -58,7 +58,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                           @if ($data->return_date)
-                              {{ $data->return_date->format('Y-m-d') }}
+                              {{ $data->return_date->format('d M Y') }}
                           @else
                               -
                           @endif
@@ -67,9 +67,9 @@
 
                         @php
                             $statusClass = match($data->status) {
-                                'finished' => 'bg-emerald-200 text-emerald-600',
-                                'ongoing'  => 'bg-sky-200 text-sky-600',
-                                default    => 'bg-orange-200 text-orange-600',
+                                'finished' => 'bg-emerald-100 text-emerald-500',
+                                'ongoing'  => 'bg-sky-100 text-sky-500',
+                                default    => 'bg-orange-100 text-orange-500',
                             };
                         @endphp
 
@@ -83,10 +83,17 @@
                             @switch($data->status)
                                 @case('ongoing')
                                     <a href="{{ route('borrows.edit', $data->id) }}">
-                                      <button class="px-5 py-1 text-sm text-white bg-green-600 hover:bg-green-700 rounded">
+                                      <button class="px-5 py-1 text-sm text-white bg-yellow-500 hover:bg-yellow-600 rounded">
                                         Edit
                                       </button>
                                     </a>
+                                    <form action="{{ route('borrows.finished', $data->id) }}" method="POST" style="display:inline;">
+                                      @csrf
+                                      @method('PUT')
+                                      <button type="submit" class="px-3 py-1 text-sm text-white bg-green-600 hover:bg-green-700 rounded">
+                                        Finish
+                                      </button>
+                                    </form>
                                     @break
                                   
                                 @case('pending')
@@ -109,7 +116,7 @@
                                     <form action="{{ route('borrows.destroy', $data->id) }}" method="POST">
                                       @csrf
                                       @method('DELETE')
-                                      <button class="px-5 py-1 text-sm text-white bg-red-600 hover:bg-red-700 rounded">Decline</button>
+                                      <button class="px-5 py-1 text-sm text-white bg-red-600 hover:bg-red-700 rounded">Delete</button>
                                     </form>
                                     @break
                             @endswitch

@@ -13,7 +13,20 @@ class BorrowController extends Controller
 {
     public function index()
     {
-        $borrows = Borrow::get();
+        // $borrows = Borrow::get();
+
+        // $pending  = Borrow::where('status', 'pending')->get();
+        // $ongoing  = Borrow::where('status', 'ongoing')->get();
+        // $finished = Borrow::where('status', 'finished')->get();
+
+        $borrows = Borrow::orderByRaw("
+            CASE 
+                WHEN status = 'pending' THEN 1
+                WHEN status = 'ongoing' THEN 2
+                WHEN status = 'finished' THEN 3
+                ELSE 4
+            END
+        ")->get();
 
         $breadcrumbs = [
             ['label' => 'Borrow']
@@ -76,7 +89,15 @@ class BorrowController extends Controller
 
     public function edit(string $id)
     {
-        
+        $borrows = Borrow::findorFail($id);
+        $items = Items::where('status', 'available')->where('available', '>', 0)->get();
+        $locations = Location::get();
+
+        $breadcrumbs = [
+            ['label' => 'Borrow', 'url' => route('borrows.index')],
+            ['label' => 'Edit']
+        ];
+        return view('dashboard.borrow.edit', compact('borrows','items','locations','breadcrumbs'));
     }
 
     public function update(Request $request, string $id)
@@ -99,13 +120,24 @@ class BorrowController extends Controller
     }
 
     public function finished(Request $request, string $id){
+        $borrow = Borrow::findOrFail($id);
+        $item = Items::findOrFail($borrow->item_id);
 
+        $borrow->update([
+            'status' => 'finished',
+            'return_date' => now(),
+        ]);
+
+        $item->available   = $item->available + $borrow->quantity;
+        $item->unavailable = $item->unavailable - $borrow->quantity;
+        $item->save();
+
+        return redirect('borrows');
     }
 
     public function accepted(Request $request, string $id)
     {
         $borrow = Borrow::findOrFail($id);
-
         $item = Items::findOrFail($borrow->item_id);
 
         $borrow->update([
