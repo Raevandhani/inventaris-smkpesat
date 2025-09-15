@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Items;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ItemController extends Controller
 {
@@ -32,7 +33,7 @@ class ItemController extends Controller
         $data = $request->all();
         
         $request->validate([
-            "name" => "required",
+            "name" => "required|unique:items,name",
             "category_id" => "required",
             "condition" => "nullable",
             "available" => "nullable",
@@ -60,7 +61,11 @@ class ItemController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            "name" => "required",
+            "name" => [
+                "required",
+                Rule::unique('items', 'name')->ignore($id),
+            ],
+
             "category_id" => "required",
             "condition" => "nullable",
             "total_stock" => "required|integer|min:0",

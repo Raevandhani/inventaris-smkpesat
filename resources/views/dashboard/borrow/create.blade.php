@@ -36,23 +36,20 @@
               <input type="number" name="quantity" id="quantity" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="Stok Barang" required>
             </div>
             <div>
-              <label for="borrow_date" class="block mb-2 text-sm font-medium text-gray-900">Tanggal Pinjam</label>
+              <label for="borrow_date" class="block mb-2 text-sm font-medium text-gray-900">
+                Tanggal Pinjam
+              </label>
+
               <input 
-                type="hidden" 
+                type="datetime-local" 
                 name="borrow_date" 
-                value="{{ date('Y-m-d') }}"
-              >
-              <input 
-                type="date" 
-                name="borrow_date" 
-                id="borrow_date" 
+                id="borrow_date"
+                value="{{ now()->format('Y-m-d\TH:i') }}" 
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                value="{{ date('Y-m-d') }}" 
-                min="{{ date('Y-m-d') }}"
                 required
-                disabled
               >
             </div>
+
             <div>
                 <label for="location_id" class="block mb-2 text-sm font-medium text-gray-900">Lokasi</label>
                 <select id="location_id" name="location_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">

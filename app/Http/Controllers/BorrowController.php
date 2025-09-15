@@ -13,20 +13,7 @@ class BorrowController extends Controller
 {
     public function index()
     {
-        // $borrows = Borrow::get();
-
-        // $pending  = Borrow::where('status', 'pending')->get();
-        // $ongoing  = Borrow::where('status', 'ongoing')->get();
-        // $finished = Borrow::where('status', 'finished')->get();
-
-        $borrows = Borrow::orderByRaw("
-            CASE 
-                WHEN status = 'pending' THEN 1
-                WHEN status = 'ongoing' THEN 2
-                WHEN status = 'finished' THEN 3
-                ELSE 4
-            END
-        ")->get();
+        $borrows = Borrow::latest()->get();
 
         $breadcrumbs = [
             ['label' => 'Borrow']
@@ -63,7 +50,7 @@ class BorrowController extends Controller
             "location_id" => "required",
             "quantity"    => "required|integer|min:1",
             "borrow_date" => "required|date",
-            "return_date" => "nullable|date",
+            "return_date" => "nullable|date|after_or_equal:borrow_date",
             "status"      => "nullable",
         ]);
 
@@ -80,7 +67,6 @@ class BorrowController extends Controller
         $data = $request->all();
         $data['user_id'] = Auth::id();
         $data['status'] = 'pending';
-
         Borrow::create($data);
 
         return redirect('borrows');
@@ -124,7 +110,7 @@ class BorrowController extends Controller
         $item = Items::findOrFail($borrow->item_id);
 
         $borrow->update([
-            'status' => 'finished',
+            'status' => 'done',
             'return_date' => now(),
         ]);
 
@@ -156,7 +142,6 @@ class BorrowController extends Controller
 
         return redirect('borrows');
     }
-
 
     // public function declined(Request $request, string $id){
     //     $request->validate([

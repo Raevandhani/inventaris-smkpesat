@@ -12,9 +12,14 @@ class Borrow extends Model
     ];
 
     protected $casts = [
-        'borrow_date' => 'date',
-        'return_date' => 'date',
+        'borrow_date' => 'datetime',
+        'return_date' => 'datetime',
     ];
+
+    public function getBorrowDateFormattedAttribute()
+    {
+        return $this->borrow_date ? $this->borrow_date->format('d-m-Y H:i') : null;
+    }
 
     public function user()
     {

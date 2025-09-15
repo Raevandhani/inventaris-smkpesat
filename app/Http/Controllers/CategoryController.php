@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Items;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -10,7 +11,10 @@ class CategoryController extends Controller
 
     public function index(Request $request)
     {
-        $categories = Category::withCount('items')->latest()->get();
+        $categories = Category::withCount('items')
+        ->withSum('items', 'total_stock')
+        ->latest()
+        ->get();
 
         $editCategory = null;
         if ($request->has('edit')) {

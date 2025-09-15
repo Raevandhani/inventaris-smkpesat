@@ -19,6 +19,17 @@ class Items extends Model
         "status",
     ];
 
+    protected static function booted()
+    {
+        static::saving(function ($item) {
+            if ($item->available <= 0) {
+                $item->status = 'Unavailable';
+            } else {
+                $item->status = 'Available';
+            }
+        });
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);

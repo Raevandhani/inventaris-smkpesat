@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UsersController;
 
@@ -66,5 +67,6 @@ Route::prefix('/')->group(function () {
 });
 
 Route::resource('/items', ItemController::class);
+Route::resource('/maintains', MaintenanceController::class);
 
 require __DIR__.'/auth.php';
