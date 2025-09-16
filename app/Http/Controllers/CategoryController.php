@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-
     public function index(Request $request)
     {
         $categories = Category::withCount('items')
@@ -37,11 +36,6 @@ class CategoryController extends Controller
         Category::create(['name' => $request->name]);
 
         return redirect()->route('categories.index');
-    }
-
-    public function edit(string $id)
-    {
-        //
     }
 
     public function update(Request $request, string $id)

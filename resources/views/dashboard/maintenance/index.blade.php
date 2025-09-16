@@ -26,7 +26,7 @@
               <button class="px-6 py-2.5 text-white bg-sky-700 hover:bg-sky-800 rounded transition duration-150 text-base font-semibold">
                 ADD ITEM
               </button>
-          </a>
+          </a>  
         </div>
         <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3 mt-5">
           <div class="-m-1.5 overflow-x-auto">

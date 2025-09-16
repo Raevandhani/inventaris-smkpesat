@@ -38,11 +38,11 @@
                 </div>
 
                 <div class="flex items-center justify-between">
-                    @if (Route::has('password.request'))
+                    {{-- @if (Route::has('password.request'))
                         <a class="text-sm text-orange-400 hover:text-orange-600" href="{{ route('password.request') }}">
                             Forgot Password?
                         </a>
-                    @endif
+                    @endif --}}
 
                     <button type="submit"
                         class="bg-blue-700 font-bold text-white py-2 px-5 rounded-lg shadow-md hover:bg-blue-800 transition">

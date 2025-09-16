@@ -27,6 +27,7 @@
                 ADD ITEM
               </button>
           </a>
+          <a href="{{ route('borrows.export.pdf') }}" class="">Download PDF</a>
         </div>
         <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3 mt-5">
           <div class="-m-1.5 overflow-x-auto">

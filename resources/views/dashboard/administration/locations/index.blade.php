@@ -21,25 +21,25 @@
 
     <div class="px-6 py-4">
         <div class="w-full flex items-center mb-4">
-          @if($editCategory)
-              <form action="{{ route('categories.update', $editCategory->id) }}" method="POST" class="flex items-center gap-2">
+          @if($edit)
+              <form action="{{ route('locations.update', $edit->id) }}" method="POST" class="flex items-center gap-2">
                   @csrf
                   @method('PUT')
               
                   <input
                       type="text"
                       name="name"
-                      value="{{ old('name', $editCategory->name) }}"
+                      value="{{ old('name', $edit->name) }}"
                       required
                       class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                   >
               
                   <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Update</button>
               
-                  <a href="{{ route('categories.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
+                  <a href="{{ route('locations.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
               </form>
           @else
-              <form action="{{ route('categories.store') }}" method="POST" class="flex items-center gap-2">
+              <form action="{{ route('locations.store') }}" method="POST" class="flex items-center gap-2">
                   @csrf
               
                   <input
@@ -65,26 +65,24 @@
                     <tr>
                       <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase w-16">#</th>
                       <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Name</th>
-                      <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Count</th>
-                      <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Quantity</th>
+                      <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Items</th>
                       <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase w-32">Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach ($categories as $data)
+                    @foreach ($locations as $data)
                       <tr>
                         <td class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium text-gray-800 w-16">{{ $loop->iteration }}</td>
                         <td class="px-6 py-4 text-start whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->name }}</td>
-                        <td class="px-6 py-4 text-start whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->items_count }}</td>
-                        <td class="px-6 py-4 text-start whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->items_sum_total_stock ?? "-" }}</td>
+                        <td class="px-6 py-4 text-start whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->borrow_count }}</td>
                         <td>
                           <div class="flex items-center gap-1">
-                            <a href="{{ route('categories.index', ['edit' => $data->id]) }}">
+                            <a href="{{ route('locations.index', ['edit' => $data->id]) }}">
                               <button class="px-3 py-1 text-sm text-white bg-green-600 hover:bg-green-700 rounded">
                                 Edit
                               </button>
                             </a>
-                            <form action="{{ route('categories.destroy', $data->id) }}" method="POST">
+                            <form action="{{ route('locations.destroy', $data->id) }}" method="POST">
                               @csrf
                               @method('DELETE')
                               <button class="px-3 py-1 text-sm text-white bg-red-600 hover:bg-red-700 rounded">Delete</button>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Borrow;
 use App\Models\Items;
 use App\Models\Location;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use ParagonIE\Sodium\Core\Curve25519\Ge\P2;
@@ -162,5 +163,17 @@ class BorrowController extends Controller
         $borrows->delete();
 
         return redirect('borrows');
+    }
+
+    public function exportPdf()
+    {
+        $borrows = Borrow::with(['item', 'location', 'user'])
+            ->where('status', 'done')
+            ->get();
+    
+        $pdf = Pdf::loadView('exports.borrow', compact('borrows'))
+                  ->setPaper('a4', 'landscape');
+    
+        return $pdf->download('BorrowReport.pdf');
     }
 }
