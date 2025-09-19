@@ -12,15 +12,44 @@ use ParagonIE\Sodium\Core\Curve25519\Ge\P2;
 
 class BorrowController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $borrows = Borrow::latest()->get();
+        $query = Borrow::with(['item', 'location', 'user'])->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function($x) use ($search) {
+                $x->where('status', 'like', "%{$search}%")
+                  ->orWhereHas('item', fn($y) => $y->where('name', 'like', "%{$search}%"))
+                  ->orWhereHas('user', fn($y) => $y->where('name', 'like', "%{$search}%"))
+                  ->orWhereHas('location', fn($y) => $y->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        $sortOption = $request->get('sort', 'latest');
+
+        if ($sortOption === 'asc') {
+            $query->orderBy('created_at', 'asc');
+        } elseif ($sortOption === 'desc') {
+            $query->orderBy('created_at', 'desc');
+        } elseif ($sortOption === 'az') {
+            $query->join('items', 'borrows.item_id', '=', 'items.id')
+                  ->orderBy('items.name', 'asc')
+                  ->select('borrows.*');
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $borrows = $query->paginate(20)->appends($request->all());
 
         $breadcrumbs = [
             ['label' => 'Borrow']
         ];
-        return view('dashboard.borrow.index', compact('borrows', 'breadcrumbs'));
+
+        return view('dashboard.borrow.index', compact('borrows', 'breadcrumbs','sortOption'));
     }
+
 
     public function items()
     {

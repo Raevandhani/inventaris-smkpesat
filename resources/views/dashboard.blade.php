@@ -4,20 +4,10 @@
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
-
-    {{-- <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
-    </div> --}}
     
     <div class="px-6 py-4">
         <div class="mb-3">
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
                 <article class="flex  items-center gap-5 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/3">
                     <div class="inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-white/90">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -26,7 +16,7 @@
                     </div>
                     <div>
                         <h3 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
-                        12,384
+                        {{ $totalUsers }}
                         </h3>
                         <p class="flex items-center gap-3 text-gray-500 dark:text-gray-400">
                         Total Users
@@ -43,7 +33,7 @@
                     </div>
                     <div>
                         <h3 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
-                        728
+                        {{ $totalItems }}
                         </h3>
                         <p class="flex items-center gap-3 text-gray-500 dark:text-gray-400">
                         Total Items
@@ -63,7 +53,7 @@
                         12,384
                         </h3>
                         <p class="flex items-center gap-3 text-gray-500 dark:text-gray-400">
-                        Total Maintenances
+                        Maintenances
                         </p>
                     </div>
                 </article>
