@@ -6,29 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-
             $table->unsignedBigInteger('category_id');
-
-            $table->string('condition');
-            $table->integer('available')->default(0);
-            $table->integer('unavailable')->default(0);
+            $table->integer('borrowed')->default(0);
+            $table->integer('maintenance')->default(0);
+            $table->integer('others')->default(0);
             $table->integer('total_stock');
-            $table->string('status');
+            $table->boolean('status');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('items');

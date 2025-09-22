@@ -21,6 +21,11 @@ class Borrow extends Model
         return $this->borrow_date ? $this->borrow_date->format('d-m-Y H:i') : null;
     }
 
+    public function getReturnDateFormattedAttribute()
+    {
+        return $this->return_date ? $this->return_date->format('d-m-Y H:i') : null;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

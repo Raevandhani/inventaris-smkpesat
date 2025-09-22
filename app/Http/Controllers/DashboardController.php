@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Borrow;
 use App\Models\Items;
+use App\Models\Maintenance;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,8 @@ class DashboardController extends Controller
         
         $totalUsers = User::count();
         $totalItems = Items::count();
+        $totalMaintains = Maintenance::count();
 
-        return view('dashboard', compact('borrowedItems', 'totalUsers', 'totalItems'));
+        return view('dashboard', compact('borrowedItems', 'totalUsers', 'totalItems','totalMaintains'));
     }
 }

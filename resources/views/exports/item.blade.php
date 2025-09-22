@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Borrows Report</title>
+    <title>Item Report</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -47,27 +47,31 @@
     </style>
 </head>
 <body>
-    <h2>Borrowed Items Report - {{ \Carbon\Carbon::now()->format('F Y') }}</h2>
+    <h2>Items Report - {{ \Carbon\Carbon::now()->format('F Y') }}</h2>
     <table>
         <thead>
             <tr>
-                <th>User</th>
+                <th>#</th>
+                <th>Category</th>
                 <th>Item</th>
-                <th>Location</th>
-                <th>Quantity</th>
-                <th>Borrow Date</th>
-                <th>Return Date</th>
+                <th>Available</th>
+                <th>Borrowed</th>
+                <th>Maintenance</th>
+                <th>Other</th>
+                <th>Total</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($borrows as $borrow)
+            @foreach($items as $item)
             <tr>
-                <td>{{ $borrow->user->name ?? 'N/A' }}</td>
-                <td>{{ $borrow->item->name ?? 'N/A' }}</td>
-                <td>{{ $borrow->location->name ?? 'N/A' }}</td>
-                <td>{{ $borrow->quantity }}</td>
-                <td>{{ $borrow->borrow_date }}</td>
-                <td>{{ $borrow->return_date ?? '-' }}</td>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $item->category->name ?? 'N/A' }}</td>
+                <td>{{ $item->name ?? 'N/A' }}</td>
+                <td>{{ $item->available ?? '-'}}</td>
+                <td>{{ $item->borrowed ?? '-' }}</td>
+                <td>{{ $item->maintenance ?? '-' }}</td>
+                <td>{{ $item->others ?? '-' }}</td>
+                <td>{{ $item->total_stock ?? '-' }}</td>
             </tr>
             @endforeach
         </tbody>

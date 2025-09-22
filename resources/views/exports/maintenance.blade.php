@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Borrows Report</title>
+    <title>Maintenance Report</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -47,27 +47,27 @@
     </style>
 </head>
 <body>
-    <h2>Borrowed Items Report - {{ \Carbon\Carbon::now()->format('F Y') }}</h2>
+    <h2>Maintenance Report - {{ \Carbon\Carbon::now()->format('F Y') }}</h2>
     <table>
         <thead>
             <tr>
-                <th>User</th>
+                <th>#</th>
                 <th>Item</th>
-                <th>Location</th>
                 <th>Quantity</th>
-                <th>Borrow Date</th>
-                <th>Return Date</th>
+                <th>Notes</th>
+                <th>Start At</th>
+                <th>Finish At</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($borrows as $borrow)
+            @foreach($maintains as $data)
             <tr>
-                <td>{{ $borrow->user->name ?? 'N/A' }}</td>
-                <td>{{ $borrow->item->name ?? 'N/A' }}</td>
-                <td>{{ $borrow->location->name ?? 'N/A' }}</td>
-                <td>{{ $borrow->quantity }}</td>
-                <td>{{ $borrow->borrow_date }}</td>
-                <td>{{ $borrow->return_date ?? '-' }}</td>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $data->item->name }}</td>
+                <td>{{ $data->quantity }}</td>
+                <td>{{ $data->notes ?? '-'}}</td>
+                <td>{{ $data->start_at }}</td>
+                <td>{{ $data->finish_at }}</td>
             </tr>
             @endforeach
         </tbody>

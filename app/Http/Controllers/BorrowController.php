@@ -5,20 +5,27 @@ namespace App\Http\Controllers;
 use App\Models\Borrow;
 use App\Models\Items;
 use App\Models\Location;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use ParagonIE\Sodium\Core\Curve25519\Ge\P2;
+
+use Barryvdh\DomPDF\Facade\Pdf;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\Console\Input\Input;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BorrowController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Borrow::with(['item', 'location', 'user'])->latest();
+        $query = Borrow::with(['item', 'location', 'user']);
+        $items = Items::whereRaw('total_stock - borrowed - maintenance - others > 0')
+              ->where('status', true)
+              ->get();
+        $locations = Location::get();
 
         if ($request->filled('search')) {
             $search = $request->search;
-
             $query->where(function($x) use ($search) {
                 $x->where('status', 'like', "%{$search}%")
                   ->orWhereHas('item', fn($y) => $y->where('name', 'like', "%{$search}%"))
@@ -27,18 +34,30 @@ class BorrowController extends Controller
             });
         }
 
-        $sortOption = $request->get('sort', 'latest');
-
-        if ($sortOption === 'asc') {
-            $query->orderBy('created_at', 'asc');
-        } elseif ($sortOption === 'desc') {
-            $query->orderBy('created_at', 'desc');
-        } elseif ($sortOption === 'az') {
-            $query->join('items', 'borrows.item_id', '=', 'items.id')
-                  ->orderBy('items.name', 'asc')
-                  ->select('borrows.*');
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'oldest':
+                    $query->orderBy('id', 'asc');
+                    break;
+                case 'latest':
+                    $query->orderBy('id', 'desc');
+                    break;
+                case 'largest':
+                    $query->orderBy('quantity', 'desc');
+                    break;
+                case 'smallest':
+                    $query->orderBy('quantity', 'asc');
+                    break;
+                default:
+                    $query->orderBy('id', 'desc');
+            }
         } else {
-            $query->orderBy('created_at', 'desc');
+            $query->orderBy('id', 'desc');
+        }
+
+        $edit = null;
+        if($request->has('edit')) {
+            $edit = Borrow::find($request->query('edit'));
         }
 
         $borrows = $query->paginate(20)->appends($request->all());
@@ -47,29 +66,7 @@ class BorrowController extends Controller
             ['label' => 'Borrow']
         ];
 
-        return view('dashboard.borrow.index', compact('borrows', 'breadcrumbs','sortOption'));
-    }
-
-
-    public function items()
-    {
-        $items = Borrow::get();
-        $breadcrumbs = [
-            ['label' => 'Borrow']
-        ];
-        return view('dashboard.borrow.index', compact('items', 'breadcrumbs'));
-    }
-
-    public function create()
-    {
-        $items = Items::where('status', 'available')->where('available', '>', 0)->get();
-        $locations = Location::get();
-
-        $breadcrumbs = [
-            ['label' => 'Borrows', 'url' => route('borrows.index')],
-            ['label' => 'Create']
-        ];
-        return view('dashboard.borrow.create', compact('items','locations','breadcrumbs'));
+        return view('dashboard.borrow.index', compact('borrows','breadcrumbs','edit','items', 'locations'));
     }
 
     public function store(Request $request)
@@ -84,12 +81,12 @@ class BorrowController extends Controller
             "status"      => "nullable",
         ]);
 
-        $item = Items::findOrFail($request->item_id);
+        $items = Items::findOrFail($request->item_id);
 
-        if ($request->quantity > $item->available) {
+        if ($request->quantity > $items->available) {
             return back()
                 ->withErrors([
-                    'quantity' => "Only {$item->available} item(s) are available right now.",
+                    'quantity' => "Only {$items->available} item(s) are available right now.",
                 ])
                 ->withInput();
         }
@@ -102,51 +99,50 @@ class BorrowController extends Controller
         return redirect('borrows');
     }
 
-
-    public function edit(string $id)
-    {
-        $borrows = Borrow::findorFail($id);
-        $items = Items::where('status', 'available')->where('available', '>', 0)->get();
-        $locations = Location::get();
-
-        $breadcrumbs = [
-            ['label' => 'Borrow', 'url' => route('borrows.index')],
-            ['label' => 'Edit']
-        ];
-        return view('dashboard.borrow.edit', compact('borrows','items','locations','breadcrumbs'));
-    }
-
     public function update(Request $request, string $id)
     {
         $request->validate([
-            "item_id" => "required",
             "location_id" => "required",
-            "quantity" => "required",
-            "borrow_date" => "required",
-            "return_date" => "nullable",
-            "status" => "nullable",
+            "quantity" => "required|integer|min:1",
         ]);
 
-        $borrows = Borrow::findorFail($id);
+        $borrow = Borrow::findOrFail($id);
+        $items = $borrow->item;
 
-        $data = $request->all();
-        $borrows->update($data);
-        
+        $inputQuantity = (int) $request->input('quantity');
+        $diff = $inputQuantity - $borrow->quantity;
+
+        if ($diff > 0 && $diff > $items->available) {
+            return back()->withErrors([
+                'quantity' => "Only {$items->available} item(s) are available right now."
+            ])->withInput();
+        }
+
+        $borrow->update([
+            'quantity' => $inputQuantity,
+            'location_id' => $request->location_id,
+        ]);
+
+        if ($diff > 0) {
+            $items->increment('borrowed', $diff);
+        } elseif ($diff < 0) {
+            $items->decrement('borrowed', -$diff);
+        }
+
         return redirect('borrows');
     }
 
-    public function finished(Request $request, string $id){
+    public function finished(Request $request, string $id)
+    {
         $borrow = Borrow::findOrFail($id);
-        $item = Items::findOrFail($borrow->item_id);
+        $items = $borrow->item;
 
         $borrow->update([
             'status' => 'done',
             'return_date' => now(),
         ]);
 
-        $item->available   = $item->available + $borrow->quantity;
-        $item->unavailable = $item->unavailable - $borrow->quantity;
-        $item->save();
+        $items->decrement('borrowed', $borrow->quantity);
 
         return redirect('borrows');
     }
@@ -154,37 +150,16 @@ class BorrowController extends Controller
     public function accepted(Request $request, string $id)
     {
         $borrow = Borrow::findOrFail($id);
-        $item = Items::findOrFail($borrow->item_id);
+        $items = $borrow->item;
 
         $borrow->update([
             'status' => 'ongoing',
         ]);
 
-        $item->available   = $item->available - $borrow->quantity;
-        $item->unavailable = ($item->unavailable ?? 0) + $borrow->quantity;
-        $item->save();
-
-        if ($item->available < 0) {
-            $item->available = 0;
-        }
-
-        $item->save();
+        $items->increment('borrowed', $borrow->quantity);
 
         return redirect('borrows');
     }
-
-    // public function declined(Request $request, string $id){
-    //     $request->validate([
-    //         "status" => "required",
-    //     ]);
-
-    //     $borrows = Borrow::findorFail($id);
-
-    //     $data = $request->all();
-    //     $borrows->update($data);
-        
-    //     return redirect('borrows');
-    // }
 
     public function destroy(string $id)
     {
@@ -194,15 +169,95 @@ class BorrowController extends Controller
         return redirect('borrows');
     }
 
-    public function exportPdf()
+    public function exportPdf(Request $request)
     {
-        $borrows = Borrow::with(['item', 'location', 'user'])
-            ->where('status', 'done')
-            ->get();
-    
+        $date1 = $request->date1;
+        $date2 = $request->date2;
+
+        $borrows = Borrow::where('status', 'done')
+                ->when($date1, function ($query, $date1) {
+                    $query->where(function ($q) use ($date1) {
+                        $q->whereDate('borrow_date', '>=', $date1)
+                          ->orWhereDate('return_date', '>=', $date1);
+                    });
+                })
+                ->when($date2, function ($query, $date2) {
+                    $query->where(function ($q) use ($date2) {
+                        $q->whereDate('borrow_date', '<=', $date2)
+                          ->orWhereDate('return_date', '<=', $date2);
+                    });
+                })
+                ->get();
+
         $pdf = Pdf::loadView('exports.borrow', compact('borrows'))
                   ->setPaper('a4', 'landscape');
-    
+
         return $pdf->download('BorrowReport.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $date1 = $request->date1;
+        $date2 = $request->date2;
+
+        $borrows = Borrow::where('status', 'done')
+                ->when($date1, function ($query, $date1) {
+                    $query->where(function ($q) use ($date1) {
+                        $q->whereDate('borrow_date', '>=', $date1)
+                          ->orWhereDate('return_date', '>=', $date1);
+                    });
+                })
+                ->when($date2, function ($query, $date2) {
+                    $query->where(function ($q) use ($date2) {
+                        $q->whereDate('borrow_date', '<=', $date2)
+                          ->orWhereDate('return_date', '<=', $date2);
+                    });
+                })
+                ->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Borrows Report');
+
+        $sheet->setCellValue('B2', '#');
+        $sheet->setCellValue('C2', 'User');
+        $sheet->setCellValue('D2', 'Item');
+        $sheet->setCellValue('E2', 'Location');
+        $sheet->setCellValue('F2', 'Quantity');
+        $sheet->setCellValue('G2', 'Borrowed At');
+        $sheet->setCellValue('H2', 'Return At');
+
+        $sheet->getStyle('B2:H2')->getFont()->setBold(true);
+
+        foreach (range('B', 'H') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $no = 1;
+        $row = 3;
+
+        foreach ($borrows as $data) {
+            $sheet->setCellValue("B{$row}", $no++);
+            $sheet->setCellValue("C{$row}", $data->user?->name);
+            $sheet->setCellValue("D{$row}", $data->item?->name);
+            $sheet->setCellValue("E{$row}", $data->location?->name);
+            $sheet->setCellValue("F{$row}", $data->quantity);
+            $sheet->setCellValue("G{$row}", $data->borrow_date->timezone('Asia/Jakarta')->format('d F Y - H:i'));
+            $sheet->setCellValue("H{$row}", $data->return_date->timezone('Asia/Jakarta')->format('d F Y - H:i'));
+            $row++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $fileName = "borrows_report.xlsx";
+
+        $response = new StreamedResponse(function() use($writer) {
+            $writer->save('php://output');
+        });
+
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', "attachment;filename=\"{$fileName}\"");
+        $response->headers->set('Cache-Control','max-age=0');
+
+        return $response;
     }
 }

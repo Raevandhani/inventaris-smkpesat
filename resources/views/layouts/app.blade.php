@@ -13,6 +13,7 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
         <style>
             *{
@@ -26,7 +27,6 @@
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900 w-full md:pl-52 overflow-x-hidden">
             @include('layouts.topbar')
 
-            <!-- Page Heading -->
             @isset($header)
                 <header class="bg-white dark:bg-gray-800 shadow">
                     <div class="max-w-screen px-12 py-6">
@@ -35,7 +35,6 @@
                 </header>
             @endisset
 
-            <!-- Page Content -->
             <main>
                 {{ $slot }}
             </main>

@@ -45,8 +45,6 @@ Route::prefix('users')->name('users.')->group(function () {
 });
 
 Route::prefix('borrows')->name('borrows.')->group(function () {
-    Route::get('items', [BorrowController::class, 'items'])->name('items');
-    
     Route::resource('/', BorrowController::class)
     ->parameters(['' => 'borrows'])
     ->names([
@@ -62,7 +60,42 @@ Route::prefix('borrows')->name('borrows.')->group(function () {
     Route::put('{id}/declined', [BorrowController::class, 'declined'])->name('declined');
     Route::put('{id}/finished', [BorrowController::class, 'finished'])->name('finished');
 
+    Route::get('export/excel', [BorrowController::class, 'exportExcel'])->name('export.excel');
     Route::get('export/pdf', [BorrowController::class, 'exportPdf'])->name('export.pdf');
+});
+
+Route::prefix('items')->name('items.')->group(function () {
+    Route::resource('/', ItemController::class)
+    ->parameters(['' => 'items'])
+    ->names([
+        'index'   => 'index',
+        'create'  => 'create',
+        'store'   => 'store',
+        'edit'    => 'edit',
+        'update'  => 'update',
+        'destroy' => 'destroy',
+    ]);
+
+    Route::get('export/excel', [ItemController::class, 'exportExcel'])->name('export.excel');
+    Route::get('export/pdf', [ItemController::class, 'exportPdf'])->name('export.pdf');
+});
+
+Route::prefix('maintains')->name('maintains.')->group(function () {
+    Route::resource('/', MaintenanceController::class)
+    ->parameters(['' => 'maintains'])
+    ->names([
+        'index'   => 'index',
+        'create'  => 'create',
+        'store'   => 'store',
+        'edit'    => 'edit',
+        'update'  => 'update',
+        'destroy' => 'destroy',
+    ]);
+
+    Route::put('{id}/finished', [MaintenanceController::class, 'finished'])->name('finished');
+
+    Route::get('export/excel', [MaintenanceController::class, 'exportExcel'])->name('export.excel');
+    Route::get('export/pdf', [MaintenanceController::class, 'exportPdf'])->name('export.pdf');
 });
 
 Route::prefix('/')->group(function () {
@@ -70,9 +103,6 @@ Route::prefix('/')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('locations', LocationController::class);
 });
-
-Route::resource('/items', ItemController::class);
-Route::resource('/maintains', MaintenanceController::class);
 
 
 

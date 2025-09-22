@@ -12,20 +12,32 @@ class Items extends Model
     protected $fillable = [
         "name",
         "category_id",
-        "condition",
-        "available",
-        "unavailable",
+        "borrowed",
+        "maintenance",
+        "others",
         "total_stock",
         "status",
     ];
 
+    public function getAvailableAttribute()
+    {
+        return $this->total_stock - $this->borrowed - $this->maintenance - $this->others;
+    }
+
+    public function getUnavailableAttribute()
+    {
+        return $this->borrowed + $this->maintenance + $this->others;
+    }
+
     protected static function booted()
     {
         static::saving(function ($item) {
-            if ($item->available <= 0) {
-                $item->status = 'Unavailable';
+            $available = $item->total_stock - $item->borrowed - $item->maintenance - $item->others;
+
+            if ($available <= 0) {
+                $item->status = false;
             } else {
-                $item->status = 'Available';
+                $item->status = true;
             }
         });
     }
@@ -38,5 +50,10 @@ class Items extends Model
     public function borrows()
     {
         return $this->hasMany(Borrow::class, 'item_id');
+    }
+
+    public function maintenances()
+    {
+        return $this->hasMany(Maintenance::class, 'item_id');
     }
 }

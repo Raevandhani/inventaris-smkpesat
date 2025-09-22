@@ -25,13 +25,12 @@
               <form action="{{ route('categories.update', $editCategory->id) }}" method="POST" class="flex items-center gap-2">
                   @csrf
                   @method('PUT')
-              
                   <input
                       type="text"
                       name="name"
                       value="{{ old('name', $editCategory->name) }}"
                       required
-                      class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      class="px-6 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                   >
               
                   <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Update</button>
@@ -48,10 +47,10 @@
                       value="{{ old('name') }}"
                       placeholder="Enter category name"
                       required
-                      class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      class="px-3 py-2.5 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                   >
               
-                  <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Add</button>
+                  <button type="submit" class="px-4 py-2 bg-sky-700 hover:bg-sky-800 text-white rounded">Add</button>
               </form>
           @endif
         </div>
@@ -84,6 +83,7 @@
                                 Edit
                               </button>
                             </a>
+                            
                             <form action="{{ route('categories.destroy', $data->id) }}" method="POST">
                               @csrf
                               @method('DELETE')
