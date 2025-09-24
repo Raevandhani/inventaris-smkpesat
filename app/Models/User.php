@@ -9,9 +9,17 @@ use Illuminate\Notifications\Notifiable;
 
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @method bool can(string $ability, mixed $arguments = [])
+ * @method bool hasRole(string|array $roles)
+ * @method bool assignRole(string|array $roles)
+ * @method bool removeRole(string|array $roles)
+ */
 class User extends Authenticatable
 {
     use HasRoles;
+    protected $guard_name = 'web';
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 

@@ -4,8 +4,9 @@
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
-    
+
     <div class="px-6 py-4">
+    @role('admin')
         <div class="mb-3">
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
                 <article class="flex  items-center gap-5 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/3">
@@ -90,6 +91,272 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    @endrole
 
+    @unlessrole('admin')
+        <div class="w-full flex items-center justify-between mb-3 px-2 py-2.5 bg-gray-50 shadow-md rounded">
+            @can('borrow.request')
+            <button id="toggleAdd" class="px-5 py-1.5 text-white bg-sky-700 hover:bg-sky-800 rounded transition duration-150 font-semibold">
+              Request Borrow
+            </button>
+            @endcan
+
+            @can('borrow.view')
+            <div>
+                <button id="showHistory" class="px-5 py-1.5 text-white bg-blue-600 hover:bg-blue-700 rounded transition duration-150 font-semibold">
+                    Show History
+                </button>
+                <button id="showBorrow" class="px-5 py-1.5 text-white bg-green-600 hover:bg-green-700 rounded transition duration-150 font-semibold hidden">
+                    Show Table
+                </button>
+            </div>
+            @endcan
+        </div>
+
+        @can('borrow.request')
+        <div id="Add" class="bg-white mb-3 p-5 rounded shadow-md hidden">
+          <form action="{{ route('borrows.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="redirect" value="dashboard">
+            <div class="grid gap-4 grid-cols-2 sm:gap-3">
+              <div>
+                <label for="item_id" class="block mb-2 text-sm font-medium text-gray-900">Barang Dipinjam</label>
+                <select id="item_id" name="item_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
+                    <option value="" class="text-gray-400">-- Barang --</option>
+                    @foreach ($items as $data)
+                        <option value="{{ $data->id }}">{{ $data->name }}</option>
+                    @endforeach
+                </select>
+              </div>
+              <div>
+                <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900">Jumlah Dipinjam</label>
+                <input type="number" name="quantity" id="quantity" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="Stok Barang" required>
+              </div>
+              <div>
+                <label for="borrow_date" class="block mb-2 text-sm font-medium text-gray-900">
+                  Tanggal Pinjam
+                </label>
+
+                <input 
+                  type="datetime-local" 
+                  name="borrow_date" 
+                  id="borrow_date"
+                  value="{{ now()->format('Y-m-d\TH:i') }}" 
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                  required
+                >
+              </div>
+
+              <div>
+                  <label for="location_id" class="block mb-2 text-sm font-medium text-gray-900">Lokasi</label>
+                  <select id="location_id" name="location_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
+                      <option value="" class="text-gray-400">Lokasi Peminjaman</option>
+                      @foreach ($locations as $data)
+                        <option value="{{ $data->id }}">{{ $data->name }}</option>
+                      @endforeach
+                  </select>
+              </div>
+
+
+            </div>
+              <button type="submit" class="inline-flex items-center px-5 py-2 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-teal-700 rounded-lg focus:ring-4 hover:bg-teal-800">
+                Submit
+              </button>
+          </form>
+        </div>
+        @endcan
+
+        @can('items.view')
+        <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3 mb-3">
+          <div class="-m-1.5 overflow-x-auto">
+            <div class="p-1.5 min-w-full inline-block align-middle">
+              <div class="overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">#</th>
+                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Category</th>
+                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Name</th>
+                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Available</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    @forelse ($items as $data)
+                      <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                          {{ $data->category ? $data->category->name : '-' }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->available }}</td>
+                      </tr>
+                    @empty
+                      <tr>
+                        <td colspan="8" class="px-4 py-3 text-center text-gray-500">
+                            No result found
+                        </td>
+                      </tr>
+                    @endforelse
+                  
+                  </tbody>
+                </table>
+                <div class="mt-4">
+                  {{ $items->links() }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        @endcan
+
+        @can('borrow.view')
+        <div id="borrow">
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">Borrowed Items</h2>
+                <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+                    <thead class="bg-gray-100 text-gray-700 text-sm">
+                        <tr>
+                            <th class="px-4 py-2 text-left">#</th>
+                            <th class="px-4 py-2 text-left">Items</th>
+                            <th class="px-4 py-2 text-left">Location</th>
+                            <th class="px-4 py-2 text-left">Quantity</th>
+                            <th class="px-4 py-2 text-left">Borrowed At</th>
+                            <th class="px-4 py-2 text-left">Return At</th>
+                            <th class="px-4 py-2 text-left">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        @forelse ($borrows->whereIn('status', ['pending', 'ongoing'])->sortBy(fn($b) => array_search($b->status, ['pending', 'ongoing'])) as $data)
+                            <tr class="border-t">
+                                <td class="px-4 py-2">{{ $loop->iteration }}</td>
+                                <td class="px-4 py-2">{{ $data->item->name }}</td>
+                                <td class="px-4 py-2">{{ $data->location?->name }}</td>
+                                <td class="px-4 py-2">{{ $data->quantity }}</td>
+                                <td class="px-4 py-2">{{ $data->borrow_date->timezone('Asia/Jakarta')->format('d M Y - H:i') }}</td>
+                                <td class="px-4 py-2">
+                                    @if ($data->return_date)
+                                        {{ $data->return_date->timezone('Asia/Jakarta')->format('d M Y - H:i') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                @php
+                                    $statusClass = match($data->status) {   
+                                        'ongoing'  => 'bg-sky-100 text-sky-500',
+                                        default    => 'bg-orange-100 text-orange-500',
+                                    };
+                                @endphp
+                                <td class="px-4 py-2">
+                                    <span class="px-2 py-1 rounded text-xs font-semibold {{ $statusClass }}">
+                                        {{ ucfirst($data->status) }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="px-4 py-3 text-center text-gray-500">
+                                    No items are currently borrowed.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4">
+              {{ $borrows->links() }}
+            </div>
+        </div>
+
+        {{-- History --}}
+        <div class="hidden" id="history">
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">History</h2>
+                <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+                    <thead class="bg-gray-100 text-gray-700 text-sm">
+                        <tr>
+                            <th class="px-4 py-2 text-left">#</th>
+                            <th class="px-4 py-2 text-left">Items</th>
+                            <th class="px-4 py-2 text-left">Location</th>
+                            <th class="px-4 py-2 text-left">Quantity</th>
+                            <th class="px-4 py-2 text-left">Borrowed At</th>
+                            <th class="px-4 py-2 text-left">Return At</th>
+                            <th class="px-4 py-2 text-left">Status</th>
+                            <th class="px-4 py-2 text-left">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        @forelse ($borrows->whereIn('status', ['declined', 'done'])->sortBy(fn($b) => array_search($b->status, ['declined', 'done'])) as $data)
+                            <tr class="border-t">
+                                <td class="px-4 py-2">{{ $loop->iteration }}</td>
+                                <td class="px-4 py-2">{{ $data->item->name }}</td>
+                                <td class="px-4 py-2">{{ $data->location?->name }}</td>
+                                <td class="px-4 py-2">{{ $data->quantity }}</td>
+                                <td class="px-4 py-2">{{ $data->borrow_date->timezone('Asia/Jakarta')->format('d M Y - H:i') }}</td>
+                                <td class="px-4 py-2">
+                                    @if ($data->return_date)
+                                        {{ $data->return_date->timezone('Asia/Jakarta')->format('d M Y - H:i') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                @php
+                                    $statusClass = match($data->status) {   
+                                        'done' => 'bg-emerald-100 text-emerald-500',
+                                        'declined'  => 'bg-red-100 text-red-500',
+                                        default    => '',
+                                    };
+                                @endphp
+                                <td class="px-4 py-2">
+                                    <span class="px-2 py-1 rounded text-xs font-semibold {{ $statusClass }}">
+                                        {{ ucfirst($data->status) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="flex justify-end items-center gap-1 mr-3">
+                                        <form action="{{ route('borrows.destroy', $data->id) }}" method="POST">
+                                          @csrf
+                                          @method('DELETE')
+                                          <button class="px-5 py-1 text-sm text-white bg-red-600 hover:bg-red-700 rounded">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="px-4 py-3 text-center text-gray-500">
+                                    No History Found
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4">
+              {{ $borrows->links() }}
+            </div>
+        </div>
+        @endcan
+    @endunlessrole
+    <div/>
+    <script>
+        const addForm = document.getElementById("Add");
+        document.getElementById("toggleAdd").addEventListener("click", function () {
+          addForm.classList.toggle("hidden");
+        });
+
+        const showHistory = document.getElementById("showHistory");
+        const showBorrow = document.getElementById("showBorrow");
+        const borrow = document.getElementById("borrow");
+        const history = document.getElementById("history");
+
+        function toggleView() {
+          borrow.classList.toggle("hidden");
+          history.classList.toggle("hidden");
+          showHistory.classList.toggle("hidden");
+          showBorrow.classList.toggle("hidden");
+        }
+
+        showHistory.addEventListener("click", toggleView);
+        showBorrow.addEventListener("click", toggleView);
+    </script>
 </x-app-layout>

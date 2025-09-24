@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -11,6 +12,11 @@ class RolesController extends Controller
 {
     public function index(Request $request)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+        
         $roles = Role::with('users')->get();
 
         $editRole = null;
@@ -27,6 +33,11 @@ class RolesController extends Controller
 
     public function store(Request $request)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
         ]);
@@ -41,6 +52,11 @@ class RolesController extends Controller
 
     public function update(Request $request, string $id)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $request->validate([
             'name' => 'required|string|max:255|unique:roles,name,' . $id,
         ]);
@@ -58,6 +74,11 @@ class RolesController extends Controller
 
     public function destroy(string $id)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+        
         $roles = Role::findorFail($id);
         $roles->delete();
 

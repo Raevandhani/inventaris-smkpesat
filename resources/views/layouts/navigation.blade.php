@@ -17,6 +17,7 @@
                 </x-nav-link>
             </li>
             
+@role('admin')
             <li>
                 <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
@@ -95,4 +96,5 @@
             {{ __('Users') }}
         </x-nav-link>
     </div>
+    @endrole
 </nav>

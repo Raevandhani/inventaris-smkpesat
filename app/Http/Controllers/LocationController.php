@@ -4,11 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LocationController extends Controller
 {
     public function index(Request $request)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+        
         $locations = Location::withCount('borrow')->get();
         $edit = null;
         if ($request->has('edit')) {
@@ -24,6 +30,11 @@ class LocationController extends Controller
 
     public function store(Request $request)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $request->validate([
             'name' => 'required|string|max:255|unique:locations,name',
         ]);
@@ -35,6 +46,11 @@ class LocationController extends Controller
 
     public function update(Request $request, string $id)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $request->validate([
             'name' => 'required|string|max:255|unique:locations,name,' . $id,
         ]);
@@ -47,6 +63,11 @@ class LocationController extends Controller
 
     public function destroy(string $id)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+        
         $locations = Location::findorFail($id);
         $locations->delete();
 

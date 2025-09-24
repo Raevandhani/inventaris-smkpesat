@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\Console\Input\Input;
@@ -18,6 +19,11 @@ class ItemController extends Controller
 {
     public function index(Request $request)
     {
+        // "can" is not a bug
+        if (!Auth::user()->can('items.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $query = Items::with('category');
         $categories = Category::all();
 
@@ -66,6 +72,11 @@ class ItemController extends Controller
 
     public function store(Request $request)
     {
+        // "can" is not a bug
+        if (!Auth::user()->can('items.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $request->validate([
             "name" => "required|unique:items,name",
             "category_id" => "required",
@@ -85,19 +96,13 @@ class ItemController extends Controller
         return redirect('items')->with('success', 'Item created successfully.');
     }
 
-    public function edit(string $id)
-    {
-        $items = Items::findorFail($id);
-        $categories = Category::all();
-        $breadcrumbs = [
-            ['label' => 'Items', 'url' => route('items.index')],
-            ['label' => 'Edit']
-        ];
-        return view('dashboard.items.edit', compact('items','categories','breadcrumbs'));
-    }
-
     public function update(Request $request, string $id)
     {
+        // "can" is not a bug
+        if (!Auth::user()->can('items.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $request->validate([
             "name" => [
                 "required",
@@ -130,6 +135,11 @@ class ItemController extends Controller
 
     public function destroy(string $id)
     {
+        // "can" is not a bug
+        if (!Auth::user()->can('items.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $items = Items::findorFail($id);
         $items->delete();
 
@@ -138,6 +148,11 @@ class ItemController extends Controller
 
     public function exportPdf(Request $request)
     {
+        // "can" is not a bug
+        if (!Auth::user()->can('items.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $date1 = $request->date1;
         $date2 = $request->date2;
 
@@ -154,6 +169,11 @@ class ItemController extends Controller
 
     public function exportExcel(Request $request)
     {
+        // "can" is not a bug
+        if (!Auth::user()->can('items.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+        
         $date1 = $request->date1;
         $date2 = $request->date2;
 

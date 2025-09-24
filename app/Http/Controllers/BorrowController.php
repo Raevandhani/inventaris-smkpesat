@@ -18,6 +18,11 @@ class BorrowController extends Controller
 {
     public function index(Request $request)
     {
+        // "can" is not a bug
+        if (!Auth::user()->can('borrow.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $query = Borrow::with(['item', 'location', 'user']);
         $items = Items::whereRaw('total_stock - borrowed - maintenance - others > 0')
               ->where('status', true)
@@ -71,6 +76,10 @@ class BorrowController extends Controller
 
     public function store(Request $request)
     {
+        if (!Auth::user()->can('borrow.manage') && !Auth::user()->can('borrow.request')) {
+            return redirect()->route('dashboard');
+        }
+
         $request->validate([
             "user_id"     => "nullable",
             "item_id"     => "required|exists:items,id",
@@ -84,23 +93,30 @@ class BorrowController extends Controller
         $items = Items::findOrFail($request->item_id);
 
         if ($request->quantity > $items->available) {
-            return back()
-                ->withErrors([
-                    'quantity' => "Only {$items->available} item(s) are available right now.",
-                ])
-                ->withInput();
+            return back()->withErrors([
+                'quantity' => "Only {$items->available} item(s) are available right now.",
+            ])->withInput();
         }
 
         $data = $request->all();
         $data['user_id'] = Auth::id();
         $data['status'] = 'pending';
+
         Borrow::create($data);
 
-        return redirect('borrows');
+        return $request->redirect === 'dashboard'
+            ? redirect()->route('dashboard')
+            : redirect()->route('borrows.index');
     }
+
 
     public function update(Request $request, string $id)
     {
+        // "can" is not a bug
+        if (!Auth::user()->can('borrow.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $request->validate([
             "location_id" => "required",
             "quantity" => "required|integer|min:1",
@@ -134,6 +150,11 @@ class BorrowController extends Controller
 
     public function finished(Request $request, string $id)
     {
+        // "can" is not a bug
+        if (!Auth::user()->can('borrow.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $borrow = Borrow::findOrFail($id);
         $items = $borrow->item;
 
@@ -149,6 +170,11 @@ class BorrowController extends Controller
 
     public function accepted(Request $request, string $id)
     {
+        // "can" is not a bug
+        if (!Auth::user()->can('borrow.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $borrow = Borrow::findOrFail($id);
         $items = $borrow->item;
 
@@ -161,8 +187,28 @@ class BorrowController extends Controller
         return redirect('borrows');
     }
 
+    public function declined(Request $request, string $id)
+    {
+        // "can" is not a bug
+        if (!Auth::user()->can('borrow.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
+        $borrow = Borrow::findOrFail($id);
+
+        $borrow->update([
+            'status' => 'declined',
+        ]);
+
+        return redirect('borrows');
+    }
+
     public function destroy(string $id)
     {
+        if (!Auth::user()->can('borrow.request')) {
+            return redirect()->route('dashboard');
+        }
+
         $borrows = Borrow::findorFail($id);
         $borrows->delete();
 
@@ -171,6 +217,11 @@ class BorrowController extends Controller
 
     public function exportPdf(Request $request)
     {
+        // "can" is not a bug
+        if (!Auth::user()->can('borrow.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $date1 = $request->date1;
         $date2 = $request->date2;
 
@@ -197,6 +248,11 @@ class BorrowController extends Controller
 
     public function exportExcel(Request $request)
     {
+        // "can" is not a bug
+        if (!Auth::user()->can('borrow.manage')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+        
         $date1 = $request->date1;
         $date2 = $request->date2;
 

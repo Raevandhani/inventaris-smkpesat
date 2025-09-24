@@ -204,7 +204,7 @@
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                  @forelse ($maintains->sortBy(fn($b) => array_search($b->status, ['pending', 'ongoing', 'done'])) as $data)
+                  @forelse ($maintains->sortBy(fn($b) => array_search($b->status, [false, true])) as $data)
                     <tr>
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $loop->iteration }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->item?->name ?? '-' }}</td>
@@ -222,8 +222,9 @@
                       </td>
                       @php
                           $statusClass = match($data->status) {   
-                              true => 'bg-emerald-100 text-emerald-500',
-                              default    => 'bg-orange-100 text-orange-500',
+                              1 => 'bg-emerald-100 text-emerald-500',
+                              0 => 'bg-orange-100 text-orange-500',
+                              default => ''
                           };
                       @endphp
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">

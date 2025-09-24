@@ -7,6 +7,7 @@ use App\Models\Maintenance;
 use Illuminate\Http\Request;
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\Console\Input\Input;
@@ -17,6 +18,11 @@ class MaintenanceController extends Controller
 {
     public function index(Request $request)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $query = Maintenance::with('item');
         $items = Items::whereRaw('total_stock - borrowed - maintenance - others > 0')
               ->where('status', true)
@@ -71,6 +77,11 @@ class MaintenanceController extends Controller
 
     public function store(Request $request)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $request->validate([
             "item_id"     => "required|exists:items,id",
             "quantity"    => "required|integer|min:1",
@@ -98,6 +109,11 @@ class MaintenanceController extends Controller
 
     public function update(Request $request, string $id)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $request->validate([
             "notes"    => "nullable|string",
             "quantity" => "required|integer|min:1",
@@ -131,6 +147,11 @@ class MaintenanceController extends Controller
 
     public function finished(Request $request, string $id)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $maintains = Maintenance::findOrFail($id);
         $items = $maintains->item;
 
@@ -146,6 +167,11 @@ class MaintenanceController extends Controller
 
     public function destroy(string $id)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $maintains = Maintenance::findorFail($id);
         $maintains->delete();
 
@@ -154,6 +180,11 @@ class MaintenanceController extends Controller
 
     public function exportPdf(Request $request)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+
         $date1 = $request->date1;
         $date2 = $request->date2;
 
@@ -180,6 +211,11 @@ class MaintenanceController extends Controller
 
     public function exportExcel(Request $request)
     {
+        // hasRole Is Not A Bug
+        if (!Auth::user()->hasRole('admin')) {
+            abort(response()->redirectToRoute('dashboard'));
+        }
+        
         $date1 = $request->date1;
         $date2 = $request->date2;
 

@@ -221,7 +221,7 @@
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                  @forelse ($borrows->sortBy(fn($b) => array_search($b->status, ['pending', 'ongoing', 'done'])) as $data)
+                  @forelse ($borrows->whereIn('status', ['pending', 'ongoing', 'done'])->sortBy(fn($b) => array_search($b->status, ['pending', 'ongoing', 'done'])) as $data)
                     <tr>
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $loop->iteration }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->user?->name ?? '-' }}</td>
@@ -276,9 +276,9 @@
                                         Accept
                                     </button>
                                   </form>
-                                  <form action="{{ route('borrows.destroy', $data->id) }}" method="POST">
+                                  <form action="{{ route('borrows.declined', $data->id) }}" method="POST">
                                     @csrf
-                                    @method('DELETE')
+                                    @method('PUT')
                                     <button class="px-3 py-1 text-sm text-white bg-red-600 hover:bg-red-700 rounded">Decline</button>
                                   </form>
                                   @break

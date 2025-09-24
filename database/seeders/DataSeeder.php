@@ -13,10 +13,6 @@ class DataSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            Role::class => [
-                ['name' => 'student', 'guard_name' => 'web'],
-                ['name' => 'teacher', 'guard_name' => 'web'],
-            ],
             Category::class => [
                 ['name' => 'Computer'],
                 ['name' => 'Audio'],

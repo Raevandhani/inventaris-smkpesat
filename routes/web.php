@@ -27,58 +27,78 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::prefix('users')->name('users.')->group(function () {
-    Route::get('students', [UsersController::class, 'students'])->name('students');
-    Route::get('teachers', [UsersController::class, 'teachers'])->name('teachers');
-
-    Route::resource('/', UsersController::class)
-        ->parameters(['' => 'user'])
-        ->names([
-            'index'   => 'index',
-            'create'  => 'create',
-            'store'   => 'store',
-            'show'    => 'show',
-            'edit'    => 'edit',
-            'update'  => 'update',
-            'destroy' => 'destroy',
-        ]);
+Route::prefix('users')->name('users.')->middleware(['auth', 'permission:users.manage'])->group(function () {
+    Route::resource('/', UsersController::class)->parameters(['' => 'users']);
 });
 
 Route::prefix('borrows')->name('borrows.')->group(function () {
-    Route::resource('/', BorrowController::class)
-    ->parameters(['' => 'borrows'])
-    ->names([
-        'index'   => 'index',
-        'create'  => 'create',
-        'store'   => 'store',
-        'edit'    => 'edit',
-        'update'  => 'update',
-        'destroy' => 'destroy',
-    ]);
-    
-    Route::put('{id}/accepted', [BorrowController::class, 'accepted'])->name('accepted');
-    Route::put('{id}/declined', [BorrowController::class, 'declined'])->name('declined');
-    Route::put('{id}/finished', [BorrowController::class, 'finished'])->name('finished');
+    Route::get('/', [BorrowController::class, 'index'])
+        ->name('index')
+        ->middleware('can:borrow.view');
 
-    Route::get('export/excel', [BorrowController::class, 'exportExcel'])->name('export.excel');
-    Route::get('export/pdf', [BorrowController::class, 'exportPdf'])->name('export.pdf');
+    Route::get('/create', [BorrowController::class, 'create'])
+        ->name('create')
+        ->middleware('can:borrow.request');
+
+    Route::post('/', [BorrowController::class, 'store'])
+        ->name('store')
+        ->middleware('can:borrow.request');
+
+    Route::put('/{borrows}', [BorrowController::class, 'update'])
+        ->name('update')
+        ->middleware('can:borrow.manage');
+
+    Route::delete('/{borrows}', [BorrowController::class, 'destroy'])
+        ->name('destroy')
+        ->middleware('can:borrow.manage');
+
+    Route::put('{id}/accepted', [BorrowController::class, 'accepted'])
+        ->name('accepted')
+        ->middleware('can:borrow.manage');
+
+    Route::put('{id}/declined', [BorrowController::class, 'declined'])
+        ->name('declined')
+        ->middleware('can:borrow.manage');
+
+    Route::put('{id}/finished', [BorrowController::class, 'finished'])
+        ->name('finished')
+        ->middleware('can:borrow.manage');
+
+    Route::get('export/excel', [BorrowController::class, 'exportExcel'])
+        ->name('export.excel')
+        ->middleware('can:borrow.manage');
+
+    Route::get('export/pdf', [BorrowController::class, 'exportPdf'])
+        ->name('export.pdf')
+        ->middleware('can:borrow.manage');
 });
 
 Route::prefix('items')->name('items.')->group(function () {
-    Route::resource('/', ItemController::class)
-    ->parameters(['' => 'items'])
-    ->names([
-        'index'   => 'index',
-        'create'  => 'create',
-        'store'   => 'store',
-        'edit'    => 'edit',
-        'update'  => 'update',
-        'destroy' => 'destroy',
-    ]);
+    Route::get('/', [ItemController::class, 'index'])
+        ->name('index')
+        ->middleware('can:items.view');
 
-    Route::get('export/excel', [ItemController::class, 'exportExcel'])->name('export.excel');
-    Route::get('export/pdf', [ItemController::class, 'exportPdf'])->name('export.pdf');
+    Route::post('/', [ItemController::class, 'store'])
+        ->name('store')
+        ->middleware('can:items.manage');
+
+    Route::put('/{items}', [ItemController::class, 'update'])
+        ->name('update')
+        ->middleware('can:items.manage');
+
+    Route::delete('/{items}', [ItemController::class, 'destroy'])
+        ->name('destroy')
+        ->middleware('can:items.manage');
+
+    Route::get('export/excel', [ItemController::class, 'exportExcel'])
+        ->name('export.excel')
+        ->middleware('can:items.manage');
+
+    Route::get('export/pdf', [ItemController::class, 'exportPdf'])
+        ->name('export.pdf')
+        ->middleware('can:items.manage');
 });
+
 
 Route::prefix('maintains')->name('maintains.')->group(function () {
     Route::resource('/', MaintenanceController::class)
