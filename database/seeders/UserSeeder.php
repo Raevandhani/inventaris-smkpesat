@@ -14,6 +14,7 @@ class UserSeeder extends Seeder
             'name' => 'Teacher',
             'email' => 'teacher@gmail.com',
             'password' => 'teacher123',
+            'is_verified' => true
         ]);
         $teacher->assignRole('teacher');
 

@@ -17,7 +17,8 @@ class AdminSeeder extends Seeder
             ['email' => 'admin@gmail.com'],
             [
                 'name' => 'Admin',
-                'password' => '12345678'
+                'password' => '12345678',
+                'is_verified' => true
             ]
         );
 

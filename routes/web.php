@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::prefix('users')->name('users.')->middleware(['auth', 'permission:users.manage'])->group(function () {
+Route::prefix('users')->name('users.')->group(function () {
     Route::resource('/', UsersController::class)->parameters(['' => 'users']);
 });
 
@@ -35,10 +35,6 @@ Route::prefix('borrows')->name('borrows.')->group(function () {
     Route::get('/', [BorrowController::class, 'index'])
         ->name('index')
         ->middleware('can:borrow.view');
-
-    Route::get('/create', [BorrowController::class, 'create'])
-        ->name('create')
-        ->middleware('can:borrow.request');
 
     Route::post('/', [BorrowController::class, 'store'])
         ->name('store')
@@ -50,7 +46,7 @@ Route::prefix('borrows')->name('borrows.')->group(function () {
 
     Route::delete('/{borrows}', [BorrowController::class, 'destroy'])
         ->name('destroy')
-        ->middleware('can:borrow.manage');
+        ->middleware('can:borrow.request');
 
     Route::put('{id}/accepted', [BorrowController::class, 'accepted'])
         ->name('accepted')
@@ -123,7 +119,5 @@ Route::prefix('/')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('locations', LocationController::class);
 });
-
-
 
 require __DIR__.'/auth.php';

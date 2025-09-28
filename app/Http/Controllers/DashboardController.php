@@ -14,6 +14,10 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        if (!Auth::user()->is_verified) {
+            return redirect('/');
+        }
+
         // hasRole is not a bug
         if (Auth::user()->hasRole('admin')) {
             $borrowedItems = Borrow::with(['item', 'location', 'user'])

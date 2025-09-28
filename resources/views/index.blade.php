@@ -14,28 +14,28 @@
             <form method="POST" action="{{ route('login') }}" class="space-y-5 w-full">
                 @csrf
                 <div>
-                    <label for="email" class="block text-sm font-medium text-blue-500">Email</label>
+                    <label for="email" class="block text-sm font-medium text-sky-500">Email</label>
                     <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
-                        class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm focus:outline-none focus:border-blue-400 focus:bg-white">
+                        class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm focus:outline-none focus:border-sky-500 focus:bg-white">
                     @error('email')
-                        <p class="text-sm text-orange-500 mt-1">{{ $message }}</p>
+                        <p class="text-sm text-orange-500 mt-2">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div>
-                    <label for="password" class="block text-sm font-medium text-blue-500">Password</label>
+                    <label for="password" class="block text-sm font-medium text-sky-500">Password</label>
                     <input id="password" type="password" name="password" required autocomplete="current-password"
-                        class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm focus:outline-none focus:border-blue-400 focus:bg-white">
+                        class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm focus:outline-none focus:border-sky-500 focus:bg-white">
                     @error('password')
-                        <p class="text-sm text-orange-500 mt-1">{{ $message }}</p>
+                        <p class="text-sm text-orange-500 mt-2">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <div class="flex items-center">
+                {{-- <div class="flex items-center">
                     <input id="remember_me" type="checkbox" name="remember"
-                        class="rounded border-blue-300 text-orange-500 shadow-sm focus:ring-orange-400">
-                    <label for="remember_me" class="ml-2 text-sm text-blue-700">Remember Me</label>
-                </div>
+                        class="rounded border-sky-300 text-orange-500 shadow-sm focus:ring-orange-400">
+                    <label for="remember_me" class="ml-2 text-sm text-sky-700">Remember Me</label>
+                </div> --}}
 
                 <div class="flex items-center justify-between">
                     {{-- @if (Route::has('password.request'))
@@ -43,12 +43,15 @@
                             Forgot Password?
                         </a>
                     @endif --}}
-
-                    <button type="submit"
-                        class="bg-blue-700 font-bold text-white py-2 px-5 rounded-lg shadow-md hover:bg-blue-800 transition">
-                        Login
-                    </button>
                 </div>
+
+                <button type="submit"
+                    class="bg-sky-700 font-bold text-white py-2 px-5 rounded-lg shadow-md hover:bg-sky-800 transition w-full">
+                    Login
+                </button>
+
+                <p class="text-center text-sm text-gray-500">Don't Have an Account? <a href="{{ route('register') }}"><span class="text-sky-700 hover:text-sky-900 font-medium underline">Register</span></a></p>
+                
             </form>
         </div>
 

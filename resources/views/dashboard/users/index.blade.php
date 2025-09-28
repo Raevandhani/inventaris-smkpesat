@@ -20,14 +20,44 @@
     </x-slot>
 
     <div class="px-6 py-4">
-        <div class="w-full flex items-center justify-end mb-4">
-          
+        @if($edit)
+        <div class="bg-white mb-3 p-5 rounded shadow-md">
+            <form action="{{ route('users.update', $edit->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+            
+                <div class="mb-3">
+                    <label class="block font-medium mb-1">Verified</label>
+                    <select name="is_verified" class="border rounded p-2 w-full">
+                        <option value="1" {{ $edit->is_verified ? 'selected' : '' }}>Yes</option>
+                        <option value="0" {{ !$edit->is_verified ? 'selected' : '' }}>No</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="block font-medium mb-1">Roles</label>
+                    <select name="roles[]" class="border rounded p-2 w-full" multiple>
+                        @foreach(\Spatie\Permission\Models\Role::all() as $role)
+                            <option value="{{ $role->name }}" 
+                                {{ $edit->hasRole($role->name) ? 'selected' : '' }}>
+                                {{ ucfirst($role->name) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+              
+                <div class="flex gap-2">
+                  <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Save</button>
+                  <a href="{{ route('roles.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
+              </div>
+            </form>
         </div>
+        @endif
 
         <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3">
           <div class="-m-1.5 overflow-x-auto">
             <div class="p-1.5 min-w-full inline-block align-middle">
-              <div class="overflow-hidden">
+              <div class="overflow-y-hidden">
                 <table class="min-w-full divide-y divide-gray-200">
                   <thead>
                     <tr>
@@ -35,19 +65,25 @@
                       <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Name</th>
                       <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Email</th>
                       <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Roles</th>
+                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Verified</th>
                       <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Action</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-200">
-                    @foreach ($users as $data)
+                    @forelse ($users->whereIn('is_verified', [false, true])->sortBy(fn($b) => array_search($b->status, [false, true])) as $data)
                       <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $loop->iteration }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->email }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->getRoleNames()->join(', ') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-800">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-800">{{ $data->name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-800">{{ $data->email }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-800">{{ $data->getRoleNames()->join(', ') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-xs font-medium">
+                          <p class="inline-block px-3 py-1 rounded {{ $data->is_verified ? 'bg-green-200 text-green-600' : 'bg-red-200 text-red-600'}}">
+                            {{ $data->is_verified ? 'Verified' : 'Not Verified' }}
+                          </p>
+                        </td>
                         <td>
                           <div class="flex items-center gap-1">
-                            <a href="{{ route('users.edit', $data->id) }}">
+                            <a href="{{ route('users.index', ['edit' => $data->id]) }}">
                               <button class="px-3 py-1 text-sm text-white bg-green-600 hover:bg-green-700 rounded">
                                 Edit
                               </button>
@@ -60,8 +96,8 @@
                           </div>
                         </td>
                       </tr>
-                    @endforeach
-                  
+                    @empty
+                    @endforelse
                   </tbody>
                 </table>
               </div>

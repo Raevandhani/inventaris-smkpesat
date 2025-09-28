@@ -205,14 +205,18 @@ class BorrowController extends Controller
 
     public function destroy(string $id)
     {
-        if (!Auth::user()->can('borrow.request')) {
-            return redirect()->route('dashboard');
+        $borrow = Borrow::findOrFail($id);
+
+        if (Auth::user()->hasRole('admin')) {
+            $borrow->delete();
+            return redirect()->route('borrows.index')->with('success', 'Borrow deleted.');
+        }elseif (Auth::user()->can('borrow.request') && $borrow->user_id === Auth::id()) {
+            $borrow->delete();
+            return redirect()->back()->with('success', 'Borrow deleted.');
         }
+    
 
-        $borrows = Borrow::findorFail($id);
-        $borrows->delete();
-
-        return redirect('borrows');
+        return redirect()->route('dashboard')->with('error', 'Unauthorized.');
     }
 
     public function exportPdf(Request $request)

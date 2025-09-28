@@ -20,41 +20,81 @@
     </x-slot>
 
     <div class="px-6 py-4">
-        <div class="w-full flex items-center mb-4">
-          @if($editRole)
-              <form action="{{ route('roles.update', $editRole->id) }}" method="POST" class="flex items-center gap-2 w-full">
-                  @csrf
-                  @method('PUT')
-              
-                  <input
-                      type="text"
-                      name="name"
-                      value="{{ old('name', $editRole->name) }}"
-                      required
-                      class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                  >
-              
-                  <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Update</button>
-              
-                  <a href="{{ route('roles.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
-              </form>
-          @else
-              <form action="{{ route('roles.store') }}" method="POST" class="flex items-center gap-2 w-full">
-                  @csrf
-              
-                  <input
-                      type="text"
-                      name="name"
-                      value="{{ old('name') }}"
-                      placeholder="Enter role name"
-                      required
-                      class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                  >
-              
-                  <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Add</button>
-              </form>
-          @endif
-        </div>
+
+      <div class="w-full flex items-center justify-start mb-3 px-2 py-2.5 bg-gray-50 shadow-md rounded">
+        <button id="toggleAdd" class="px-5 py-1.5 text-white bg-sky-700 hover:bg-sky-800 rounded transition duration-150 font-semibold">
+          New Roles
+        </button>
+      </div>
+
+      <div id="Add" class="bg-white mb-3 p-5 rounded shadow-md hidden">
+        <form action="{{ route('roles.store') }}" method="POST" class="flex flex-col gap-4 w-full">
+          @csrf
+        
+          <input
+              type="text"
+              name="name"
+              value="{{ old('name') }}"
+              placeholder="Enter role name"
+              required
+              class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+          >
+        
+          <div>
+              <label class="block font-medium text-sm text-gray-700 mb-2">Permissions</label>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  @foreach($permissions as $permission)
+                      <label class="flex items-center gap-2">
+                          <input type="checkbox" name="permissions[]" value="{{ $permission->name }}">
+                          <span>{{ $permission->name }}</span>
+                      </label>
+                  @endforeach
+              </div>
+          </div>
+        
+          <div class="flex gap-2">
+              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Add</button>
+          </div>
+        </form>
+      </div>
+
+      @if($editRole)
+      <div class="bg-white mb-3 p-5 rounded shadow-md">
+        <form action="{{ route('roles.update', $editRole->id) }}" method="POST" class="flex flex-col gap-4 w-full">
+          @csrf
+          @method('PUT')
+      
+          <input
+              type="text"
+              name="name"
+              value="{{ old('name', $editRole->name) }}"
+              required
+              class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+          >
+      
+          <div>
+              <label class="block font-medium text-sm text-gray-700 mb-2">Permissions</label>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  @foreach($permissions as $permission)
+                      <label class="flex items-center gap-2">
+                          <input type="checkbox" 
+                                 name="permissions[]" 
+                                 value="{{ $permission->name }}"
+                                 {{ $editRole->hasPermissionTo($permission->name) ? 'checked' : '' }}>
+                          <span>{{ $permission->name }}</span>
+                      </label>
+                  @endforeach
+              </div>
+          </div>
+        
+          {{-- Buttons --}}
+          <div class="flex gap-2">
+            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Update</button>
+            <a href="{{ route('roles.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
+          </div>
+        </form>
+      </div>
+      @endif
 
         <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3">
           <div class="-m-1.5 overflow-x-auto">
@@ -78,7 +118,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ Str::ucfirst($data->name) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->name }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->users->count() }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->users->count() }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->permissions->count() }}</td>
                         
                         <td>
                           <div class="flex items-center gap-1">
@@ -104,4 +144,14 @@
           </div>
         </div>
     </div>
+    <script>
+      // Toggle
+      const addForm = document.getElementById("Add");
+      const editForm = document.getElementById("Edit");
+
+      document.getElementById("toggleAdd").addEventListener("click", function () {
+        addForm.classList.toggle("hidden");
+      });
+    </script>
+
 </x-app-layout>

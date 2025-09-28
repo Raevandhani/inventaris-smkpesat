@@ -20,6 +20,8 @@ class RoleSeeder extends Seeder
 
             'items.view',
             'items.manage',
+
+            'users.manage',
         ];
 
         foreach ($perms as $p) {

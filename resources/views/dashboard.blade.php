@@ -169,8 +169,9 @@
         @can('items.view')
         <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3 mb-3">
           <div class="-m-1.5 overflow-x-auto">
-            <div class="p-1.5 min-w-full inline-block align-middle">
+            <div class="px-1.5 py-4 min-w-full inline-block align-middle">
               <div class="overflow-hidden">
+                <h2 class="text-xl font-semibold ml-4 mb-4">Available Items</h2>
                 <table class="min-w-full divide-y divide-gray-200">
                   <thead>
                     <tr>
@@ -338,6 +339,8 @@
         @endcan
     @endunlessrole
     <div/>
+
+
     <script>
         const addForm = document.getElementById("Add");
         document.getElementById("toggleAdd").addEventListener("click", function () {

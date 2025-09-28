@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -18,9 +19,9 @@ class RolesController extends Controller
         }
         
         $roles = Role::with('users')->get();
+        $permissions = Permission::all();
 
         $editRole = null;
-
         if ($request->has('edit')) {
             $editRole = Role::find($request->query('edit'));
         }
@@ -28,37 +29,44 @@ class RolesController extends Controller
         $breadcrumbs = [
             ['label' => 'Roles']
         ];
-        return view('dashboard.administration.roles.index', compact('roles','editRole','breadcrumbs'));
+        return view('dashboard.administration.roles.index', compact('roles','editRole','breadcrumbs','permissions'));
     }
 
     public function store(Request $request)
     {
-        // hasRole Is Not A Bug
         if (!Auth::user()->hasRole('admin')) {
-            abort(response()->redirectToRoute('dashboard'));
+            return redirect()->route('dashboard');
         }
 
         $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
+            'permissions' => 'array',
+            'permissions.*' => 'exists:permissions,name',
         ]);
 
-        Role::create([
+        $role = Role::create([
             'name' => strtolower($request->name),
-            'guard_name' => 'web',
         ]);
 
-        return redirect()->route('roles.index');
+        if ($request->has('permissions')) {
+            $role->syncPermissions($request->permissions);
+        }
+
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+        return redirect()->route('roles.index')->with('success', 'Role created successfully.');
     }
 
     public function update(Request $request, string $id)
     {
-        // hasRole Is Not A Bug
         if (!Auth::user()->hasRole('admin')) {
-            abort(response()->redirectToRoute('dashboard'));
+        return redirect()->route('dashboard');
         }
-
+    
         $request->validate([
             'name' => 'required|string|max:255|unique:roles,name,' . $id,
+            'permissions' => 'array',
+            'permissions.*' => 'exists:permissions,name',
         ]);
     
         $role = Role::findOrFail($id);
@@ -67,6 +75,8 @@ class RolesController extends Controller
             'name' => strtolower($request->name),
         ]);
     
+        $role->syncPermissions($request->permissions ?? []);
+    
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     
         return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
@@ -74,14 +84,18 @@ class RolesController extends Controller
 
     public function destroy(string $id)
     {
-        // hasRole Is Not A Bug
         if (!Auth::user()->hasRole('admin')) {
-            abort(response()->redirectToRoute('dashboard'));
+            return redirect()->route('dashboard');
         }
-        
-        $roles = Role::findorFail($id);
-        $roles->delete();
 
-        return redirect('roles');
+        $role = Role::findOrFail($id);
+
+        $role->syncPermissions([]);
+
+        $role->users()->detach();
+
+        $role->delete();
+
+        return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
     }
 }
