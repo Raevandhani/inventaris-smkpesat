@@ -1,63 +1,77 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-<div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="w-full max-w-4xl bg-white shadow sm:rounded-lg flex overflow-hidden">
-        <div class="w-full p-8 flex flex-col justify-center items-center">
-            <img src="/assets/logo-smk-light.png" alt="smkpesat-dark" class="w-40">
-
-            @if (session('status'))
-                <div class="mb-4 text-sm text-green-600">
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            <form method="POST" action="{{ route('login') }}" class="space-y-5 w-full">
-                @csrf
-                <div>
-                    <label for="email" class="block text-sm font-medium text-sky-500">Email</label>
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
-                        class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm focus:outline-none focus:border-sky-500 focus:bg-white">
-                    @error('email')
-                        <p class="text-sm text-orange-500 mt-2">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="password" class="block text-sm font-medium text-sky-500">Password</label>
-                    <input id="password" type="password" name="password" required autocomplete="current-password"
-                        class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm focus:outline-none focus:border-sky-500 focus:bg-white">
-                    @error('password')
-                        <p class="text-sm text-orange-500 mt-2">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                {{-- <div class="flex items-center">
-                    <input id="remember_me" type="checkbox" name="remember"
-                        class="rounded border-sky-300 text-orange-500 shadow-sm focus:ring-orange-400">
-                    <label for="remember_me" class="ml-2 text-sm text-sky-700">Remember Me</label>
-                </div> --}}
-
-                <div class="flex items-center justify-between">
-                    {{-- @if (Route::has('password.request'))
-                        <a class="text-sm text-orange-400 hover:text-orange-600" href="{{ route('password.request') }}">
-                            Forgot Password?
-                        </a>
-                    @endif --}}
-                </div>
-
-                <button type="submit"
-                    class="bg-sky-700 font-bold text-white py-2 px-5 rounded-lg shadow-md hover:bg-sky-800 transition w-full">
-                    Login
-                </button>
-
-                <p class="text-center text-sm text-gray-500">Don't Have an Account? <a href="{{ route('register') }}"><span class="text-sky-700 hover:text-sky-900 font-medium underline">Register</span></a></p>
-                
-            </form>
+<div class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    <div class="flex flex-col items-center w-full max-w-4xl space-y-8">
+        
+        <div class="flex flex-col items-center space-y-2">
+            <img src="/assets/logo-smk-light.png" alt="smkpesat-dark" class="w-60">
+            <h2 class="text-center font-extrabold text-sky-900 text-lg">
+                Welcome to Pesat Inventory System
+            </h2>
         </div>
-
-        <div class="hidden md:flex w-full bg-sky-200 items-center justify-center p-8">
-            <img src="https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg"
-                 alt="Illustration" class="w-3/4 max-w-sm">
+    
+        <div class="w-full bg-white shadow-xl rounded-lg overflow-hidden px-8 py-4 max-w-lg">
+            
+            @auth
+                <div class="flex flex-col items-center space-y-4 py-5">
+                    <h2 class="text-xl font-bold text-sky-700">You are already logged in</h2>
+                    <a href="{{ route('dashboard') }}" 
+                       class="block text-center bg-sky-700 text-white py-3 px-5 rounded-lg shadow-md hover:bg-sky-800 transition w-full font-semibold">
+                        Go to Dashboard
+                    </a>
+                    
+                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                        @csrf
+                        <button type="submit"
+                            class="block text-center bg-gray-500 text-white py-3 px-5 rounded-lg shadow-md hover:bg-gray-600 transition w-full font-semibold">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            @endauth
+        
+            @guest
+                @if (session('status'))
+                    <div class="mb-4 text-sm text-green-600">
+                        {{ session('status') }}
+                    </div>
+                @endif
+                
+                <form method="POST" action="{{ route('login') }}" class="space-y-5">
+                    @csrf
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-sky-700 mb-1">Email</label>
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
+                            class="w-full px-3 py-2.5 rounded-lg bg-gray-50 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-sky-700 focus:border-sky-700 transition">
+                        @error('error')
+                            <p class="text-xs text-orange-500 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-sky-700 mb-1">Password</label>
+                        <input id="password" type="password" name="password" required autocomplete="current-password"
+                            class="w-full px-3 py-2.5 rounded-lg bg-gray-50 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-sky-700 focus:border-sky-700 transition">
+                    </div> 
+                    {{-- <div class="">
+                        @if (Route::has('password.request'))
+                            <a class="text-sm text-gray-400 hover:text-gray-500 py-2 underline" href="{{ route('password.request') }}">
+                                Forgot Password?
+                            </a>
+                        @endif
+                    </div> --}}
+                    <button type="submit"
+                        class="bg-sky-700 font-bold text-white py-3 rounded-lg shadow-md hover:bg-sky-800 transition w-full mt-1">
+                        Login
+                    </button>
+                    
+                    <p class="text-center text-sm text-gray-500 pt-2">
+                        Don't Have an Account? 
+                        <a href="{{ route('register') }}" class="text-sky-700 hover:text-sky-900 font-medium underline">
+                            Register
+                        </a>
+                    </p>
+                </form>
+            @endguest
         </div>
     </div>
 </div>

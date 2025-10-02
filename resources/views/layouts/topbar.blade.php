@@ -2,7 +2,7 @@
     <div class="w-full">
         <div class="flex justify-between items-center h-16 px-12">
             <div class="font-bold">
-                INVENTORY SYSTEM
+                PESAT INVENTORY SYSTEM
             </div>
             <div class="flex gap-3 md:hidden">
                 <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">

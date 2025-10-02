@@ -16,6 +16,7 @@ class LocationController extends Controller
         }
         
         $locations = Location::withCount('borrow')->get();
+        
         $edit = null;
         if ($request->has('edit')) {
             $edit = Location::find($request->query('edit'));

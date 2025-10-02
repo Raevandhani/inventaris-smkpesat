@@ -11,9 +11,9 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    public function create(): View
+    public function create(): RedirectResponse
     {
-        return view('auth.login');
+        return redirect('/');
     }
 
     public function store(Request $request): RedirectResponse
@@ -27,13 +27,13 @@ class AuthenticatedSessionController extends Controller
 
         if (!$user || !\Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
             return back()->withErrors([
-                'email' => 'Email or Password is incorrect',
+                'login' => 'Email or Password is incorrect',
             ]);
         }
 
         if (!$user->is_verified) {
             return back()->withErrors([
-                'email' => 'Your account is not verified.',
+                'login' => 'Your account is not verified.',
             ]);
         }
 
@@ -41,7 +41,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('dashboard'));
     }
     
     public function destroy(Request $request): RedirectResponse
