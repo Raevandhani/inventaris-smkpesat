@@ -169,9 +169,8 @@
                 >
               </div>
             </div>
-            <button type="submit" class="inline-flex items-center px-5 py-2 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-yellow-500 rounded-lg focus:ring-4 hover:bg-yellow-600">
-              Update
-            </button>
+              <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Update</button>
+              <a href="{{ route('roles.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
           </form>
         </div>
         @endif
@@ -304,9 +303,11 @@
                 
                 </tbody>
               </table>
-              <div class="mt-4">
-                {{ $borrows->links() }}
-              </div>
+              @if($borrows->total() > $n)
+                <div class="px-3 pt-2 border-t border-gray-200 ">
+                  {{ $borrows->links() }}
+                </div>
+              @endif
             </div>
           </div>
         </div>

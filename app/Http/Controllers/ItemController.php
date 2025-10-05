@@ -27,7 +27,13 @@ class ItemController extends Controller
         $query = Items::with('category');
         $categories = Category::all();
 
-        if ($request->filled('search')) {
+        if ($request->has('search') && $request->has('sort')) {
+            if (trim($request->query('search', '')) === '' && trim($request->query('sort', '')) === '') {
+                return redirect()->route('items.index');
+            }
+        }
+
+        if($request->filled('search')) {
             $search = $request->search;
             $query->where(function($x) use ($search) {
                 $x->where('status', 'like', "%{$search}%")
@@ -62,12 +68,14 @@ class ItemController extends Controller
             $edit = Items::find($request->query('edit'));
         }
 
-        $items = $query->paginate(20)->appends($request->all());
+        $n = 6;
+
+        $items = $query->paginate($n)->appends($request->all());
 
         $breadcrumbs = [
             ['label' => 'Items']
         ];
-        return view('dashboard.items.index', compact('items','breadcrumbs','categories','edit'));
+        return view('dashboard.items.index', compact('items','breadcrumbs','categories','edit','n'));
     }
 
     public function store(Request $request)

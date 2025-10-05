@@ -271,9 +271,11 @@
                 
                 </tbody>
               </table>
-              <div class="mt-4">
-                {{ $maintains->links() }}
-              </div>
+              @if($maintains->total() > $n)
+                <div class="px-3 pt-2 border-t border-gray-200 ">
+                  {{ $maintains->links() }}
+                </div>
+              @endif
             </div>
           </div>
         </div>

@@ -140,9 +140,10 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-teal-700 rounded-lg focus:ring-4 hover:bg-teal-800">
-                    Update Item
+                <button type="submit" class="inline-flex items-center px-5 py-2 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-teal-700 rounded focus:ring-4 hover:bg-teal-800">
+                  Update Item
                 </button>
+                <a href="{{ route('items.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
             </form>
         </div>
         @endif
@@ -227,9 +228,11 @@
                   
                   </tbody>
                 </table>
-                <div class="mt-4">
+                @if($items->total() > $n)
+                <div class="px-3 pt-2 border-t border-gray-200 ">
                   {{ $items->links() }}
                 </div>
+                @endif
               </div>
             </div>
           </div>

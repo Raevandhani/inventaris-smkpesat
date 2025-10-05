@@ -28,6 +28,12 @@ class MaintenanceController extends Controller
               ->where('status', true)
               ->get();
 
+        if ($request->has('search') && $request->has('sort')) {
+            if (trim($request->query('search', '')) === '' && trim($request->query('sort', '')) === '') {
+                return redirect()->route('maintains.index');
+            }
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($x) use ($search) {
@@ -66,13 +72,15 @@ class MaintenanceController extends Controller
             $edit = Maintenance::find($request->query('edit'));
         }
 
-        $maintains = $query->paginate(20)->appends($request->all());
+        $n = 6;
+
+        $maintains = $query->paginate($n)->appends($request->all());
 
         $breadcrumbs = [
             ['label' => 'Maintenance']
         ];
 
-        return view('dashboard.maintenance.index', compact('maintains','breadcrumbs','edit','items'));
+        return view('dashboard.maintenance.index', compact('maintains','breadcrumbs','edit','items','n'));
     }
 
     public function store(Request $request)

@@ -29,6 +29,12 @@ class BorrowController extends Controller
               ->get();
         $locations = Location::get();
 
+        if ($request->has('search') && $request->has('sort')) {
+            if (trim($request->query('search', '')) === '' && trim($request->query('sort', '')) === '') {
+                return redirect()->route('borrows.index');
+            }
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($x) use ($search) {
@@ -65,13 +71,15 @@ class BorrowController extends Controller
             $edit = Borrow::find($request->query('edit'));
         }
 
-        $borrows = $query->paginate(20)->appends($request->all());
+        $n = 6;
+
+        $borrows = $query->paginate($n)->appends($request->all());
 
         $breadcrumbs = [
             ['label' => 'Borrow']
         ];
 
-        return view('dashboard.borrow.index', compact('borrows','breadcrumbs','edit','items', 'locations'));
+        return view('dashboard.borrow.index', compact('borrows','breadcrumbs','edit','items', 'locations', 'n'));
     }
 
     public function store(Request $request)

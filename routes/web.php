@@ -24,14 +24,14 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); 
 });
 
-Route::prefix('users')->name('users.')->group(function () {
-    Route::resource('/', UsersController::class)->parameters(['' => 'users']);
+Route::middleware('auth')->group(function () {
+    Route::resource('users', UsersController::class)->except(['show']);
 });
 
-Route::prefix('borrows')->name('borrows.')->group(function () {
+Route::prefix('borrows')->name('borrows.')->middleware(['auth'])->group(function () {
     Route::get('/', [BorrowController::class, 'index'])
         ->name('index')
         ->middleware('can:borrow.view');
@@ -69,7 +69,7 @@ Route::prefix('borrows')->name('borrows.')->group(function () {
         ->middleware('can:borrow.manage');
 });
 
-Route::prefix('items')->name('items.')->group(function () {
+Route::prefix('items')->name('items.')->middleware(['auth'])->group(function () {
     Route::get('/', [ItemController::class, 'index'])
         ->name('index')
         ->middleware('can:items.view');
@@ -95,26 +95,30 @@ Route::prefix('items')->name('items.')->group(function () {
         ->middleware('can:items.manage');
 });
 
-
-Route::prefix('maintains')->name('maintains.')->group(function () {
+Route::prefix('maintains')->name('maintains.')->middleware(['auth'])->group(function () {
     Route::resource('/', MaintenanceController::class)
-    ->parameters(['' => 'maintains'])
-    ->names([
-        'index'   => 'index',
-        'create'  => 'create',
-        'store'   => 'store',
-        'edit'    => 'edit',
-        'update'  => 'update',
-        'destroy' => 'destroy',
-    ]);
-
-    Route::put('{id}/finished', [MaintenanceController::class, 'finished'])->name('finished');
-
-    Route::get('export/excel', [MaintenanceController::class, 'exportExcel'])->name('export.excel');
-    Route::get('export/pdf', [MaintenanceController::class, 'exportPdf'])->name('export.pdf');
+        ->parameters(['' => 'maintains'])
+        ->names([
+            'index'   => 'index',
+            'create'  => 'create',
+            'store'   => 'store',
+            'edit'    => 'edit',
+            'update'  => 'update',
+            'destroy' => 'destroy',
+        ]);
+    
+    Route::put('{id}/finished', [MaintenanceController::class, 'finished'])
+        ->name('finished');
+    
+    Route::get('export/excel', [MaintenanceController::class, 'exportExcel'])
+        ->name('export.excel');
+    
+    Route::get('export/pdf', [MaintenanceController::class, 'exportPdf'])
+        ->name('export.pdf');
 });
 
-Route::prefix('/')->group(function () {
+
+Route::prefix('/')->middleware(['auth'])->group(function () {
     Route::resource('roles', RolesController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('locations', LocationController::class);

@@ -16,21 +16,23 @@ class CategoryController extends Controller
             abort(response()->redirectToRoute('dashboard'));
         }
         
-        $categories = Category::withCount('items')
-        ->withSum('items', 'total_stock')
-        ->latest()
-        ->get();
+        $query = Category::withCount('items')
+                    ->withSum('items', 'total_stock');
 
         $editCategory = null;
         if ($request->has('edit')) {
             $editCategory = Category::find($request->query('edit'));
         }
 
+        $n = 6;
+
+        $categories = $query->paginate($n)->appends($request->all());
+
         $breadcrumbs = [
             ['label' => 'Categories']
         ];
 
-        return view('dashboard.administration.categories.index', compact('categories','breadcrumbs','editCategory'));
+        return view('dashboard.administration.categories.index', compact('categories','breadcrumbs','editCategory','n'));
     }
 
     public function store(Request $request)

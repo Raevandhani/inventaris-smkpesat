@@ -21,16 +21,26 @@
 
     <div class="px-6 py-4">
 
-      <div class="w-full flex items-center justify-start mb-3 px-2 py-2.5 bg-gray-50 shadow-md rounded">
+      <div class="w-full flex items-center justify-between p-2 bg-gray-50 shadow-md rounded mb-3">
         <button id="toggleAdd" class="px-5 py-1.5 text-white bg-sky-700 hover:bg-sky-800 rounded transition duration-150 font-semibold">
           New Roles
         </button>
+
+        <form method="GET" action="{{ route('roles.index') }}" class="flex items-center">
+          <select name="sort" onchange="this.form.submit()" class="border border-gray-300 rounded *:">
+            <option value="" class="text-gray-400">Sort By</option>
+            <option value="most_user" {{ request('sort') == 'most_user' ? 'selected' : '' }}>Most User</option>
+            <option value="least_user" {{ request('sort') == 'least_user' ? 'selected' : '' }}>Least User</option>
+            <option value="most_perm" {{ request('sort') == 'most_perm' ? 'selected' : '' }}>Most Perms</option>
+            <option value="least_perm" {{ request('sort') == 'least_perm' ? 'selected' : '' }}>Least Perms</option>
+          </select>
+        </form>
       </div>
+
 
       <div id="Add" class="bg-white mb-3 p-5 rounded shadow-md hidden">
         <form action="{{ route('roles.store') }}" method="POST" class="flex flex-col gap-4 w-full">
           @csrf
-        
           <input
               type="text"
               name="name"
@@ -138,7 +148,11 @@
                     @endforeach
                   </tbody>
                 </table>
-
+                @if($roles->total() > $n)
+                <div class="px-3 pt-2 border-t border-gray-200 ">
+                  {{ $roles->links() }}
+                </div>
+                @endif
               </div>
             </div>
           </div>

@@ -15,18 +15,22 @@ class LocationController extends Controller
             abort(response()->redirectToRoute('dashboard'));
         }
         
-        $locations = Location::withCount('borrow')->get();
+        $query = Location::withCount('borrow');
         
         $edit = null;
         if ($request->has('edit')) {
             $edit = Location::find($request->query('edit'));
         }
 
+        $n = 6;
+
+        $locations = $query->paginate($n)->appends($request->all());
+
         $breadcrumbs = [
             ['label' => 'Location']
         ];
 
-        return view('dashboard.administration.locations.index', compact('locations','breadcrumbs','edit'));
+        return view('dashboard.administration.locations.index', compact('locations','breadcrumbs','edit','n'));
     }
 
     public function store(Request $request)

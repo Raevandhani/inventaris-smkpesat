@@ -20,6 +20,31 @@
     </x-slot>
 
     <div class="px-6 py-4">
+        <div class="bg-white p-2 mb-2">
+          <form method="GET" action="{{ route('users.index') }}" class="flex items-center justify-between">
+            <div class="flex items-center gap-1">
+              <input 
+                type="text" 
+                name="search" 
+                value="{{ request('search') }}" 
+                placeholder="Search..." 
+                class="border border-gray-300 rounded px-4 py-2"
+              >
+              <button type="submit" class="bg-sky-700 text-white h-10 w-10 rounded flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+              </button>
+            </div> 
+
+            <select name="filter" onchange="this.form.submit()" class="border border-gray-300 rounded *:">
+              <option value="" class="text-gray-400">Filter by</option>
+              <option value="verified" {{ request('filter') == 'verified' ? 'selected' : '' }}>Verified</option>
+              <option value="not_verified" {{ request('filter') == 'not_verified' ? 'selected' : '' }}>Not Verified</option>
+            </select>
+          </form>
+        </div>
+
         @if($edit)
         <div class="bg-white mb-3 p-5 rounded shadow-md">
             <form action="{{ route('users.update', $edit->id) }}" method="POST">
@@ -48,7 +73,7 @@
               
                 <div class="flex gap-2">
                   <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Save</button>
-                  <a href="{{ route('roles.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
+                  <a href="{{ route('users.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
               </div>
             </form>
         </div>
@@ -100,6 +125,11 @@
                     @endforelse
                   </tbody>
                 </table>
+                @if($users->total() > $n)
+                <div class="px-3 pt-2 border-t border-gray-200 ">
+                  {{ $users->links() }}
+                </div>
+                @endif
               </div>
             </div>
           </div>

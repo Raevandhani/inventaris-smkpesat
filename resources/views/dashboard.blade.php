@@ -94,6 +94,8 @@
     @endrole
 
     @unlessrole('admin')
+
+        @canany('borrow.view' || 'borrow.request')
         <div class="w-full flex items-center justify-between mb-3 px-2 py-2.5 bg-gray-50 shadow-md rounded">
             @can('borrow.request')
             <button id="toggleAdd" class="px-5 py-1.5 text-white bg-sky-700 hover:bg-sky-800 rounded transition duration-150 font-semibold">
@@ -112,6 +114,7 @@
             </div>
             @endcan
         </div>
+        @endcanany
 
         @can('borrow.request')
         <div id="Add" class="bg-white mb-3 p-5 rounded shadow-md hidden">
@@ -338,8 +341,18 @@
         </div>
         @endcan
     @endunlessrole
-    <div/>
 
+    @if (!$hasPermission)
+        <div class="flex flex-col items-center justify-center py-20 text-gray-500 dark:text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M12 9v2m0 4h.01M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0z" />
+            </svg>
+            <p class="text-lg font-semibold">No Permissions Assigned</p>
+            <p class="text-sm">You currently don't have access to any feature</p>
+        </div>
+    @endif
+    </div>
 
     <script>
         const addForm = document.getElementById("Add");

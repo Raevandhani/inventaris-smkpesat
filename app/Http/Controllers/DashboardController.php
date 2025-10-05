@@ -18,50 +18,46 @@ class DashboardController extends Controller
             return redirect('/');
         }
 
-        // hasRole is not a bug
-        if (Auth::user()->hasRole('admin')) {
-            $borrowedItems = Borrow::with(['item', 'location', 'user'])
+        $items = Items::whereRaw('total_stock - borrowed - maintenance - others > 0')
+                    ->where('status', true)
+                    ->paginate(5)
+                    ->appends($request->all());
+
+        $locations = Location::get();
+
+        $borrows = Borrow::with(['item', 'location', 'user'])
+                ->when(!Auth::user()->hasRole('admin'), function ($q) {
+                    $q->where('user_id', Auth::id());
+                })
+                ->paginate(5)->appends($request->all());
+
+        $borrowedItems = Borrow::with(['item', 'location', 'user'])
                 ->where('status', 'ongoing')
                 ->get();
             
-            $totalUsers = User::count();
-            $totalItems = Items::count();
-            $totalMaintains = Maintenance::count();
-    
-            return view('dashboard', compact('borrowedItems', 'totalUsers', 'totalItems','totalMaintains'));
-        }
+        $totalUsers = User::count();
+        $totalItems = Items::count();
+        $totalMaintains = Maintenance::count();
 
-        if(Auth::user()->can('borrow.view')) {
+        $data = match (true) {
+            Auth::user()->hasRole('admin') => compact('borrowedItems', 'totalUsers', 'totalItems', 'totalMaintains'),
+            Auth::user()->can('borrow.view') && Auth::user()->can('borrow.request') => compact('borrows','items','locations'),
+            Auth::user()->can('borrow.view') => compact('borrows'),
+            Auth::user()->can('items.view') => compact('items'),
+            default => [],
+        };
 
-            $query = Borrow::with(['item', 'location', 'user'])
-                ->when(!Auth::user()->hasRole('admin'), function ($q) {
-                    $q->where('user_id', Auth::id());
-                });
+        $data = array_merge([
+            'borrows' => $borrows ?? collect(),
+            'items' => $items ?? collect(),
+            'locations' => $locations ?? collect(),
+            'borrowedItems' => $borrowedItems ?? collect(),
+            'totalUsers' => $totalUsers ?? 0,
+            'totalItems' => $totalItems ?? 0,
+            'totalMaintains' => $totalMaintains ?? 0,
+            'hasPermission' => !empty($data),
+        ], $data);
 
-            $borrows = $query->paginate(5)->appends($request->all());
-
-            if(Auth::user()->can('borrow.request')){
-                $query = Items::whereRaw('total_stock - borrowed - maintenance - others > 0')
-                    ->where('status', true);
-
-                $items = $query->paginate(5)->appends($request->all());
-
-                $locations = Location::get();
-
-                return view('dashboard', compact('borrows','items','locations'));
-            }
-
-            return view('dashboard', compact('borrows'));
-            
-        }else if(Auth::user()->can('items.view')){
-            $query = Items::whereRaw('total_stock - borrowed - maintenance - others > 0')
-                    ->where('status', true);
-
-            $items = $query->paginate(5)->appends($request->all());
-
-            return view('dashboard', compact('items'));
-        }
-
-        return view('dashboard');
+        return view('dashboard', $data);
     }
 }

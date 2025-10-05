@@ -18,8 +18,43 @@ class RolesController extends Controller
             abort(response()->redirectToRoute('dashboard'));
         }
         
-        $roles = Role::with('users')->get();
         $permissions = Permission::all();
+
+        if ($request->has('sort') && trim($request->query('sort', '')) === '') {
+            return redirect()->route('roles.index');
+        }
+
+        $query = Role::with('users');
+
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'most_user':
+                    $query->withCount('users')->orderBy('users_count', 'desc');
+                    break;
+                
+                case 'least_user':
+                    $query->withCount('users')->orderBy('users_count', 'asc');
+                    break;
+                
+                case 'most_perm':
+                    $query->withCount('permissions')->orderBy('permissions_count', 'desc');
+                    break;
+                
+                case 'least_perm':
+                    $query->withCount('permissions')->orderBy('permissions_count', 'asc');
+                    break;
+                
+                default:
+                    $query->orderBy('id', 'desc');
+                    break;
+            }
+        } else {
+            $query->orderBy('id', 'desc');
+        }
+
+        $n = 6;
+        
+        $roles = $query->paginate($n)->appends($request->all());
 
         $editRole = null;
         if ($request->has('edit')) {
@@ -29,7 +64,7 @@ class RolesController extends Controller
         $breadcrumbs = [
             ['label' => 'Roles']
         ];
-        return view('dashboard.administration.roles.index', compact('roles','editRole','breadcrumbs','permissions'));
+        return view('dashboard.administration.roles.index', compact('roles','editRole','breadcrumbs','permissions','n'));
     }
 
     public function store(Request $request)
@@ -84,11 +119,15 @@ class RolesController extends Controller
 
     public function destroy(string $id)
     {
-        if (!Auth::user()->hasRole('admin')) {
+        if(!Auth::user()->hasRole('admin')) {
             return redirect()->route('dashboard');
         }
 
         $role = Role::findOrFail($id);
+
+        if ($role->name === 'admin') {
+            return redirect()->back()->with('error', 'You cannot delete this user.');
+        }
 
         $role->syncPermissions([]);
 

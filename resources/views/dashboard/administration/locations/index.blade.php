@@ -93,7 +93,11 @@
                     @endforeach
                   </tbody>
                 </table>
-
+                @if($locations->total() > $n)
+                <div class="px-3 pt-2 border-t border-gray-200 ">
+                  {{ $locations->links() }}
+                </div>
+                @endif
               </div>
             </div>
           </div>

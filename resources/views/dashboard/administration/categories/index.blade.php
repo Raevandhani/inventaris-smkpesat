@@ -95,7 +95,11 @@
                     @endforeach
                   </tbody>
                 </table>
-
+                @if($categories->total() > $n)
+                <div class="px-3 pt-2 border-t border-gray-200 ">
+                  {{ $categories->links() }}
+                </div>
+                @endif
               </div>
             </div>
           </div>
