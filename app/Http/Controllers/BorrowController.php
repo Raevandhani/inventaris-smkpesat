@@ -95,14 +95,15 @@ class BorrowController extends Controller
             "quantity"    => "required|integer|min:1",
             "borrow_date" => "required|date",
             "return_date" => "nullable|date|after_or_equal:borrow_date",
-            "status"      => "nullable",
+        ],[
+            'location_id.required' => 'Location field is required'
         ]);
 
         $items = Items::findOrFail($request->item_id);
 
         if ($request->quantity > $items->available) {
             return back()->withErrors([
-                'quantity' => "Only {$items->available} item(s) are available right now.",
+                'error' => "Only {$items->available} of these item(s) are available right now.",
             ])->withInput();
         }
 
@@ -113,10 +114,9 @@ class BorrowController extends Controller
         Borrow::create($data);
 
         return $request->redirect === 'dashboard'
-            ? redirect()->route('dashboard')
-            : redirect()->route('borrows.index');
+            ? redirect()->route('dashboard')->with('success','You have request a borrow, Confirm with your Admin')
+            : redirect()->route('borrows.index')->with('success','You have successfully request a borrow');
     }
-
 
     public function update(Request $request, string $id)
     {
@@ -128,6 +128,8 @@ class BorrowController extends Controller
         $request->validate([
             "location_id" => "required",
             "quantity" => "required|integer|min:1",
+        ],[
+            'location.required' => 'An input is missing. Most likely the location'
         ]);
 
         $borrow = Borrow::findOrFail($id);
@@ -138,7 +140,7 @@ class BorrowController extends Controller
 
         if ($diff > 0 && $diff > $items->available) {
             return back()->withErrors([
-                'quantity' => "Only {$items->available} item(s) are available right now."
+                'error' => "Only {$items->available} item(s) are available right now."
             ])->withInput();
         }
 
@@ -152,8 +154,9 @@ class BorrowController extends Controller
         } elseif ($diff < 0) {
             $items->decrement('borrowed', -$diff);
         }
+        $items->save();
 
-        return redirect('borrows');
+        return redirect('borrows')->with('success','Borrow updated successfully | Item: "'.$items ->name.'" | User: "'.$borrow->user->name.'"');
     }
 
     public function finished(Request $request, string $id)
@@ -172,8 +175,9 @@ class BorrowController extends Controller
         ]);
 
         $items->decrement('borrowed', $borrow->quantity);
+        $items->save();
 
-        return redirect('borrows');
+        return redirect('borrows')->with('action','Item was successfully returned | Item: "'.$items->name.'" | User: "'.$borrow->user->name.'"');
     }
 
     public function accepted(Request $request, string $id)
@@ -189,10 +193,11 @@ class BorrowController extends Controller
         $borrow->update([
             'status' => 'ongoing',
         ]);
-
+        
         $items->increment('borrowed', $borrow->quantity);
+        $items->save();
 
-        return redirect('borrows');
+        return redirect('borrows')->with('action','Accepted a request from '.$borrow->user->name);
     }
 
     public function declined(Request $request, string $id)
@@ -208,7 +213,7 @@ class BorrowController extends Controller
             'status' => 'declined',
         ]);
 
-        return redirect('borrows');
+        return redirect('borrows')->with('action','Decline '.$borrow->user->name.' whom wanted to borrow "'.$borrow->item->name.'"');
     }
 
     public function destroy(string $id)
@@ -217,12 +222,13 @@ class BorrowController extends Controller
 
         if (Auth::user()->hasRole('admin')) {
             $borrow->delete();
-            return redirect()->route('borrows.index')->with('success', 'Borrow deleted.');
+            return redirect()->route('borrows.index')->with('deleted', 'Borrow deleted successfully');
         }elseif (Auth::user()->can('borrow.request') && $borrow->user_id === Auth::id()) {
-            $borrow->delete();
-            return redirect()->back()->with('success', 'Borrow deleted.');
+            $borrow->update([
+                'user_delete' => true,
+            ]);
+            return redirect()->back()->with('action','Deleted a History');
         }
-    
 
         return redirect()->route('dashboard')->with('error', 'Unauthorized.');
     }

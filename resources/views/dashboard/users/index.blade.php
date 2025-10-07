@@ -45,6 +45,20 @@
           </form>
         </div>
 
+        @if (session('error'))
+          <p class="text-red-500 text-sm mb-2">{{ session('error') }}</p>
+        @endif
+        @if (session('success'))
+          <div class="text-green-500 text-sm mb-2">
+              {{ session('success') }}
+          </div>
+        @endif
+        @if (session('deleted'))
+          <div class="text-orange-500 text-sm mb-2">
+              {{ session('deleted') }}
+          </div>
+        @endif
+        
         @if($edit)
         <div class="bg-white mb-3 p-5 rounded shadow-md">
             <form action="{{ route('users.update', $edit->id) }}" method="POST">

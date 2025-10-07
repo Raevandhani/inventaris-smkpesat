@@ -90,6 +90,9 @@ class ItemController extends Controller
             "category_id" => "required",
             "total_stock" => "required|integer|min:0",
             "status" => "nullable",
+        ],[
+            'name.unique' => 'This item has already exist',
+            'category_id.required' => 'Category field is required',
         ]);
 
         $data = $request->only([
@@ -101,7 +104,7 @@ class ItemController extends Controller
 
         Items::create($data);
 
-        return redirect('items')->with('success', 'Item created successfully.');
+        return redirect('items')->with('success', 'Item created successfully: "'.$request->name.'"');
     }
 
     public function update(Request $request, string $id)
@@ -129,7 +132,7 @@ class ItemController extends Controller
 
         if ($newTotal < $currentUnavailable) {
             return back()->withErrors([
-                'total_stock' => "Total stock cannot be less than ($currentUnavailable) unavailable items."
+                'error' => "Total stock cannot be less than ($currentUnavailable) unavailable items."
             ])->withInput();
         }
 
@@ -138,20 +141,29 @@ class ItemController extends Controller
 
         $items->save();
 
-        return redirect('items')->with('success', 'Item updated successfully.');
+        return redirect('items')->with('success', 'Item updated successfully: "'.$request->name.'"');
     }
 
     public function destroy(string $id)
     {
         // "can" is not a bug
-        if (!Auth::user()->can('items.manage')) {
+        if(!Auth::user()->can('items.manage')) {
             abort(response()->redirectToRoute('dashboard'));
         }
 
         $items = Items::findorFail($id);
+
+        $unavailable = $items->maintenance + $items->borrowed + $items->others;
+
+        if($unavailable > 0){
+            return back()->withErrors([
+                'error' => "These items are currently being used or in repair."
+            ])->withInput();
+        }
+
         $items->delete();
 
-        return redirect('items');
+        return redirect('items')->with('deleted', 'Item deleted successfully: "'.$items->name.'"');
     }
 
     public function exportPdf(Request $request)
@@ -236,5 +248,16 @@ class ItemController extends Controller
         $response->headers->set('Cache-Control','max-age=0');
 
         return $response;
+    }
+
+    // Unused
+    public function create(){
+        return redirect()->route('categories.index');
+    }
+    public function show(){
+        return redirect()->route('categories.index');
+    }
+    public function edit(){
+        return redirect()->route('categories.index');
     }
 }

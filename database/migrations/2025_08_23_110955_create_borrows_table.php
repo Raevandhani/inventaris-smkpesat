@@ -17,6 +17,7 @@ return new class extends Migration
             $table->datetime('borrow_date');
             $table->datetime('return_date')->nullable();
             $table->string('status')->default('pending');
+            $table->boolean('user_delete')->default(false);
             $table->timestamps();
         });
     }

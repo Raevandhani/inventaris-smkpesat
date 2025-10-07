@@ -44,28 +44,36 @@ class CategoryController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
+        ], [
+            'name.unique' => 'The category name has already exists.',
         ]);
 
         Category::create(['name' => $request->name]);
 
-        return redirect()->route('categories.index');
+        return redirect()->route('categories.index')->with('success', 'Category created successfully: "'.$request->name.'"');
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         // hasRole is Not A Bug
         if (!Auth::user()->hasRole('admin')) {
             abort(response()->redirectToRoute('dashboard'));
         }
 
+        $category = Category::findOrFail($id);
+        $oldName = $category->name;
+
         $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $id,
+        ], [
+            'name.unique' => 'The category name has already exists.',
         ]);
 
-        $category = Category::findOrFail($id);
         $category->update(['name' => $request->name]);
 
-        return redirect()->route('categories.index')->with('success', 'Category updated.');
+        return redirect()
+            ->route('categories.index')
+            ->with('success', "Category name updated successfully: \"{$oldName}\" → \"{$request->name}\"");
     }
 
     public function destroy(string $id)
@@ -78,6 +86,17 @@ class CategoryController extends Controller
         $categories = Category::findorFail($id);
         $categories->delete();
 
-        return redirect('categories');
+        return redirect('categories')->with('deleted','Category deleted successfully: "'.$categories->name.'"');
+    }
+
+    // Unused
+    public function create(){
+        return redirect()->route('categories.index');
+    }
+    public function show(){
+        return redirect()->route('categories.index');
+    }
+    public function edit(){
+        return redirect()->route('categories.index');
     }
 }

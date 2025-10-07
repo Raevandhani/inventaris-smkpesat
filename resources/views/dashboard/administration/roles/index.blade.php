@@ -36,20 +36,32 @@
           </select>
         </form>
       </div>
+      @error('name')
+        <p class="text-red-500 text-sm -mt-2 mb-2">{{ $message }}</p>
+      @enderror
+      @if (session('success'))
+        <div class="text-green-500 text-sm -mt-2 mb-2">
+            {{ session('success') }}
+        </div>
+      @endif
+      @if (session('deleted'))
+        <div class="text-orange-500 text-sm -mt-2 mb-2">
+            {{ session('deleted') }}
+        </div>
+      @endif
 
 
       <div id="Add" class="bg-white mb-3 p-5 rounded shadow-md hidden">
         <form action="{{ route('roles.store') }}" method="POST" class="flex flex-col gap-4 w-full">
           @csrf
           <input
-              type="text"
-              name="name"
-              value="{{ old('name') }}"
-              placeholder="Enter role name"
-              required
-              class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            type="text"
+            name="name"
+            value="{{ old('name') }}"
+            placeholder="Enter role name"
+            required
+            class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
           >
-        
           <div>
               <label class="block font-medium text-sm text-gray-700 mb-2">Permissions</label>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -73,15 +85,13 @@
         <form action="{{ route('roles.update', $editRole->id) }}" method="POST" class="flex flex-col gap-4 w-full">
           @csrf
           @method('PUT')
-      
           <input
-              type="text"
-              name="name"
-              value="{{ old('name', $editRole->name) }}"
-              required
-              class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            type="text"
+            name="name"
+            value="{{ old('name', $editRole->name) }}"
+            required
+            class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
           >
-      
           <div>
               <label class="block font-medium text-sm text-gray-700 mb-2">Permissions</label>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-2">

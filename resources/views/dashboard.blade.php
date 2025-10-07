@@ -95,7 +95,7 @@
 
     @unlessrole('admin')
 
-        @canany('borrow.view' || 'borrow.request')
+        @canany(['borrow.view', 'borrow.request'])
         <div class="w-full flex items-center justify-between mb-3 px-2 py-2.5 bg-gray-50 shadow-md rounded">
             @can('borrow.request')
             <button id="toggleAdd" class="px-5 py-1.5 text-white bg-sky-700 hover:bg-sky-800 rounded transition duration-150 font-semibold">
@@ -289,7 +289,13 @@
                         </tr>
                     </thead>
                     <tbody class="text-sm">
-                        @forelse ($borrows->whereIn('status', ['declined', 'done'])->sortBy(fn($b) => array_search($b->status, ['declined', 'done'])) as $data)
+                        @forelse (
+                            $borrows
+                                ->whereIn('status', ['declined', 'done'])
+                                ->where('user_deleted', false)
+                                ->sortBy(fn($b) => array_search($b->status, ['declined', 'done']))
+                            as $data
+                        )
                             <tr class="border-t">
                                 <td class="px-4 py-2">{{ $loop->iteration }}</td>
                                 <td class="px-4 py-2">{{ $data->item->name }}</td>

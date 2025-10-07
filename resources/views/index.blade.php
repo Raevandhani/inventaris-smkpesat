@@ -59,17 +59,20 @@
                             </a>
                         @endif
                     </div> --}}
-                    <button type="submit"
-                        class="bg-sky-700 font-bold text-white py-3 rounded-lg shadow-md hover:bg-sky-800 transition w-full mt-1">
-                        Login
-                    </button>
-                    
-                    <p class="text-center text-sm text-gray-500 pt-2">
-                        Don't Have an Account? 
-                        <a href="{{ route('register') }}" class="text-sky-700 hover:text-sky-900 font-medium underline">
-                            Register
-                        </a>
-                    </p>
+                    <div>
+                        <div class="bg-white w-full h-3"></div>
+                        <button type="submit"
+                            class="bg-sky-700 font-bold text-white py-3 rounded-lg shadow-md hover:bg-sky-800 transition w-full">
+                            Login
+                        </button>
+                        
+                        <p class="text-center text-sm text-gray-500 mt-4">
+                            Don't Have an Account? 
+                            <a href="{{ route('register') }}" class="text-sky-700 hover:text-sky-900 font-medium underline">
+                                Register
+                            </a>
+                        </p>
+                    </div>
                 </form>
             @endguest
         </div>

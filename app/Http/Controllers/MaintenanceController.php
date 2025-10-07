@@ -102,17 +102,18 @@ class MaintenanceController extends Controller
         if ($request->quantity > $items->available) {
             return back()
                 ->withErrors([
-                    'quantity' => "Only {$items->available} item(s) are available right now.",
+                    'error' => "Only {$items->available} item(s) are available right now.",
                 ])
                 ->withInput();
         }
 
         $items->increment('maintenance', $request->quantity);
+        $items->save();
 
         $data = $request->all();
         Maintenance::create($data);
 
-        return redirect('maintains');
+        return redirect('maintains')->with('success',"{$items->name} is now Under Maintenance");
     }
 
     public function update(Request $request, string $id)
@@ -135,7 +136,7 @@ class MaintenanceController extends Controller
 
         if ($diff > 0 && $diff > $items->available) {
             return back()->withErrors([
-                'quantity' => "Only {$items->available} item(s) are available right now."
+                'error' => "Only {$items->available} item(s) are available right now."
             ])->withInput();
         }
 
@@ -150,7 +151,9 @@ class MaintenanceController extends Controller
             $items->decrement('maintenance', -$diff);
         }
 
-        return redirect('maintains');
+        $items->save();
+
+        return redirect('maintains')->with('success',"Maintenance for {$items->name} updated");
     }
 
     public function finished(Request $request, string $id)
@@ -169,8 +172,9 @@ class MaintenanceController extends Controller
         ]);
 
         $items->decrement('maintenance', $maintains->quantity);
+        $items->save();
 
-        return redirect('maintains');
+        return redirect('maintains')->with('success',"{$items->name} is repaired");
     }
 
     public function destroy(string $id)
@@ -183,7 +187,7 @@ class MaintenanceController extends Controller
         $maintains = Maintenance::findorFail($id);
         $maintains->delete();
 
-        return redirect('maintains');
+        return redirect('maintains')->with('deleted',"Maintenance Info: {$maintains->item->name} deleted");
     }
 
     public function exportPdf(Request $request)

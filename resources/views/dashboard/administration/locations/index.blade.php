@@ -25,37 +25,44 @@
               <form action="{{ route('locations.update', $edit->id) }}" method="POST" class="flex items-center gap-2">
                   @csrf
                   @method('PUT')
-              
                   <input
                       type="text"
                       name="name"
                       value="{{ old('name', $edit->name) }}"
                       required
-                      class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      class="px-3 py-2.5 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                   >
-              
                   <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Update</button>
-              
                   <a href="{{ route('locations.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
               </form>
           @else
               <form action="{{ route('locations.store') }}" method="POST" class="flex items-center gap-2">
                   @csrf
-              
                   <input
                       type="text"
                       name="name"
                       value="{{ old('name') }}"
                       placeholder="Enter location name"
                       required
-                      class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      class="px-3 py-2.5 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                   >
-              
                   <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Add</button>
               </form>
           @endif
         </div>
-
+        @error('name')
+          <p class="text-red-500 text-sm -mt-2 mb-2">{{ $message }}</p>
+        @enderror
+        @if (session('success'))
+          <div class="text-green-500 text-sm -mt-2 mb-2">
+              {{ session('success') }}
+          </div>
+        @endif
+        @if (session('deleted'))
+          <div class="text-orange-500 text-sm -mt-2 mb-2">
+              {{ session('deleted') }}
+          </div>
+        @endif
         <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3">
           <div class="-m-1.5 overflow-x-auto">
             <div class="p-1.5 min-w-full inline-block align-middle">

@@ -20,9 +20,10 @@
     </x-slot>
 
     <div class="px-6 py-4">
-        <div class="w-full flex items-center mb-4">
+        <div class="w-full flex items-center mb-3">
           @if($editCategory)
-              <form action="{{ route('categories.update', $editCategory->id) }}" method="POST" class="flex items-center gap-2">
+              <form action="{{ route('categories.update', $editCategory->id) }}" method="POST">
+                <div class="flex items-center gap-1">
                   @csrf
                   @method('PUT')
                   <input
@@ -30,17 +31,25 @@
                       name="name"
                       value="{{ old('name', $editCategory->name) }}"
                       required
-                      class="px-6 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                   >
               
-                  <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Update</button>
-              
-                  <a href="{{ route('categories.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
+                  <button type="submit" class="px-4 py-1.5 bg-green-600 text-white rounded">Update</button>
+                  <a href="{{ route('categories.index') }}" class="px-4 py-1.5 bg-gray-500 text-white rounded">Cancel</a>
+                </div>
+                @error('name')
+                  <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+                @if (session('success'))
+                  <div class="text-green-500 text-sm mt-1">
+                      {{ session('success') }}
+                  </div>
+                @endif
               </form>
           @else
-              <form action="{{ route('categories.store') }}" method="POST" class="flex items-center gap-2">
+              <form action="{{ route('categories.store') }}" method="POST" >
+                <div class="flex items-center gap-2">
                   @csrf
-              
                   <input
                       type="text"
                       name="name"
@@ -49,8 +58,21 @@
                       required
                       class="px-3 py-2.5 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                   >
-              
                   <button type="submit" class="px-4 py-2 bg-sky-700 hover:bg-sky-800 text-white rounded">Add</button>
+                </div>
+                @error('name')
+                  <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+                @if (session('success'))
+                  <div class="text-green-500 text-sm mt-1">
+                      {{ session('success') }}
+                  </div>
+                @endif
+                @if (session('deleted'))
+                  <div class="text-orange-500 text-sm mt-1">
+                      {{ session('deleted') }}
+                  </div>
+                @endif
               </form>
           @endif
         </div>

@@ -19,8 +19,8 @@ class UsersController extends Controller
         $query = User::with('roles');
         $roles = Role::all();
 
-        if ($request->has('search') && $request->has('sort')) {
-            if (trim($request->query('search', '')) === '' && trim($request->query('sort', '')) === '') {
+        if ($request->has('search') && $request->has('filter')) {
+            if (trim($request->query('search', '')) === '' && trim($request->query('filter', '')) === '') {
                 return redirect()->route('users.index');
             }
         }
@@ -70,6 +70,11 @@ class UsersController extends Controller
         }
 
         $user = User::findOrFail($id);
+        
+        if ($user->id === 1) {
+            return redirect()->back()->with('error', 'You cannot delete this user.');
+        }
+
 
         $request->validate([
             'is_verified' => 'required|boolean',
@@ -86,7 +91,7 @@ class UsersController extends Controller
 
         $edit = null;
 
-        return redirect()->route('users.index')->with('success', 'User updated successfully.');
+        return redirect()->route('users.index')->with('success', 'User updated successfully: "'.$user->name.'"');
     }
 
     public function destroy(string $id)
@@ -97,13 +102,27 @@ class UsersController extends Controller
         }
 
         $user = User::findOrFail($id);
-        if ($user->email === 'admin@gmail.com') {
+
+        if ($user->id === 1) {
             return redirect()->back()->with('error', 'You cannot delete this user.');
         }
 
         $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('users.index')->with('deleted', 'User deleted successfully: "'.$user->name.'"');
     }
 
+    // Unused
+    public function create(){
+        return redirect()->route('users.index');
+    }
+    public function store(){
+        return redirect()->route('users.index');
+    }
+    public function show(){
+        return redirect()->route('users.index');
+    }
+    public function edit(){
+        return redirect()->route('users.index');
+    }
 }

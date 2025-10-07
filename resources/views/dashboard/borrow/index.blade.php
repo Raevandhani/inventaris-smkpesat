@@ -169,8 +169,8 @@
                 >
               </div>
             </div>
-              <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Update</button>
-              <a href="{{ route('roles.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
+            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded mt-4">Update</button>
+            <a href="{{ route('borrows.index') }}" class="px-4 py-2.5 bg-gray-500 text-white rounded">Cancel</a>
           </form>
         </div>
         @endif
@@ -200,6 +200,27 @@
           </select>
         </form>
       </div>
+      
+      @foreach (['name', 'location_id', 'error'] as $field)
+          @error($field)
+              <p class="text-red-500 text-sm -mt-2 mb-2">{{ $message }}</p>
+          @enderror
+      @endforeach
+      @if (session('action'))
+        <div class="text-blue-500 text-sm -mt-2 mb-2">
+            {{ session('action') }}
+        </div>
+      @endif
+      @if (session('success'))
+        <div class="text-green-500 text-sm -mt-2 mb-2">
+            {{ session('success') }}
+        </div>
+      @endif
+      @if (session('deleted'))
+        <div class="text-orange-500 text-sm -mt-2 mb-2">
+            {{ session('deleted') }}
+        </div>
+      @endif
 
       <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-2">
         <div class="overflow-x-auto">

@@ -186,6 +186,20 @@
         </form>
       </div>
 
+      @error('error')
+          <p class="text-red-500 text-sm -mt-2 mb-2">{{ $message }}</p>
+      @enderror
+      @if (session('success'))
+        <div class="text-green-500 text-sm -mt-2 mb-2">
+            {{ session('success') }}
+        </div>
+      @endif
+      @if (session('deleted'))
+        <div class="text-orange-500 text-sm -mt-2 mb-2">
+            {{ session('deleted') }}
+        </div>
+      @endif
+
       <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-2">
         <div class="overflow-x-auto">
           <div class="p-1.5 min-w-full inline-block align-middle">

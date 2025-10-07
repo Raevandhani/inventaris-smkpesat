@@ -77,6 +77,8 @@ class RolesController extends Controller
             'name' => 'required|string|max:255|unique:roles,name',
             'permissions' => 'array',
             'permissions.*' => 'exists:permissions,name',
+        ],[
+            'name.unique' => 'The role name has already exist.',
         ]);
 
         $role = Role::create([
@@ -89,7 +91,7 @@ class RolesController extends Controller
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        return redirect()->route('roles.index')->with('success', 'Role created successfully.');
+        return redirect()->route('roles.index')->with('success', 'Role created successfully: "'.$role->name.'"');
     }
 
     public function update(Request $request, string $id)
@@ -97,14 +99,18 @@ class RolesController extends Controller
         if (!Auth::user()->hasRole('admin')) {
         return redirect()->route('dashboard');
         }
+
+        $role = Role::findOrFail($id);
+        $oldName = $role->name;
     
         $request->validate([
             'name' => 'required|string|max:255|unique:roles,name,' . $id,
             'permissions' => 'array',
             'permissions.*' => 'exists:permissions,name',
+        ],[
+            'name.unique' => 'The role name has already exist.',
         ]);
     
-        $role = Role::findOrFail($id);
     
         $role->update([
             'name' => strtolower($request->name),
@@ -114,7 +120,7 @@ class RolesController extends Controller
     
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     
-        return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
+        return redirect()->route('roles.index')->with('success', "Role name updated successfully: \"{$oldName}\" → \"{$request->name}\"");
     }
 
     public function destroy(string $id)
@@ -135,6 +141,17 @@ class RolesController extends Controller
 
         $role->delete();
 
-        return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
+        return redirect()->route('roles.index')->with('deleted', 'Role deleted successfully: "'.$role->name.'"');
+    }
+
+    // Unused
+    public function create(){
+        return redirect()->route('roles.index');
+    }
+    public function show(){
+        return redirect()->route('roles.index');
+    }
+    public function edit(){
+        return redirect()->route('roles.index');
     }
 }

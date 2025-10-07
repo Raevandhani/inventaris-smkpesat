@@ -42,11 +42,13 @@ class LocationController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255|unique:locations,name',
+        ],[
+            'name.unique' => 'This location has already exist.'
         ]);
 
         Location::create(['name' => $request->name]);
 
-        return redirect()->route('locations.index');
+        return redirect()->route('locations.index')->with('success', 'Location created successfully: "'.$request->name.'"');
     }
 
     public function update(Request $request, string $id)
@@ -56,14 +58,16 @@ class LocationController extends Controller
             abort(response()->redirectToRoute('dashboard'));
         }
 
+        $locations = Location::findOrFail($id);
+        $oldName = $locations->name;
+
         $request->validate([
             'name' => 'required|string|max:255|unique:locations,name,' . $id,
         ]);
 
-        $category = Location::findOrFail($id);
-        $category->update(['name' => $request->name]);
+        $locations->update(['name' => $request->name]);
 
-        return redirect()->route('locations.index')->with('success', 'Location updated.');
+        return redirect()->route('locations.index')->with('success', "Locations name updated successfully: \"{$oldName}\" → \"{$request->name}\"");
     }
 
     public function destroy(string $id)
@@ -76,6 +80,17 @@ class LocationController extends Controller
         $locations = Location::findorFail($id);
         $locations->delete();
 
-        return redirect('locations');
+        return redirect('locations')->with('deleted', 'Location deleted successfully: "'.$locations->name.'"');
+    }
+
+    // Unused
+    public function create(){
+        return redirect()->route('locations.index');
+    }
+    public function show(){
+        return redirect()->route('locations.index');
+    }
+    public function edit(){
+        return redirect()->route('locations.index');
     }
 }
