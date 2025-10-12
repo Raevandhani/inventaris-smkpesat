@@ -213,6 +213,11 @@ class BorrowController extends Controller
             'status' => 'declined',
         ]);
 
+        if (Auth::user()->hasRole('admin')) {
+            $borrow->delete();
+            return redirect()->route('borrows.index')->with('deleted', 'Borrow declined/deleted successfully');
+        }
+
         return redirect('borrows')->with('action','Decline '.$borrow->user->name.' whom wanted to borrow "'.$borrow->item->name.'"');
     }
 
@@ -223,13 +228,12 @@ class BorrowController extends Controller
         if (Auth::user()->hasRole('admin')) {
             $borrow->delete();
             return redirect()->route('borrows.index')->with('deleted', 'Borrow deleted successfully');
-        }elseif (Auth::user()->can('borrow.request') && $borrow->user_id === Auth::id()) {
+        }elseif (!Auth::user()->hasRole('admin') && $borrow->user_id === Auth::id()) {
             $borrow->update([
                 'user_delete' => true,
             ]);
-            return redirect()->back()->with('action','Deleted a History');
+            return redirect()->route('dashboard')->with('action','Deleted a History'); 
         }
-
         return redirect()->route('dashboard')->with('error', 'Unauthorized.');
     }
 
@@ -333,5 +337,16 @@ class BorrowController extends Controller
         $response->headers->set('Cache-Control','max-age=0');
 
         return $response;
+    }
+
+    // Unused
+    public function create(){
+        return redirect()->route('borrows.index');
+    }
+    public function show(){
+        return redirect()->route('borrows.index');
+    }
+    public function edit(){
+        return redirect()->route('borrows.index');
     }
 }

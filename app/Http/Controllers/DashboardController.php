@@ -60,4 +60,24 @@ class DashboardController extends Controller
 
         return view('dashboard', $data);
     }
+
+    // Unused
+    public function create(){
+        return redirect()->route('/');
+    }
+    public function store(){
+        return redirect()->route('/');
+    }
+    public function show(){
+        return redirect()->route('/');
+    }
+    public function edit(){
+        return redirect()->route('/');
+    }
+    public function update(){
+        return redirect()->route('/');
+    }
+    public function destroy(){
+        return redirect()->route('/');
+    }
 }

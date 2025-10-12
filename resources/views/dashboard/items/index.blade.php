@@ -7,7 +7,7 @@
                   {{ $crumbs['label'] }}
                 </a>
             @else
-              <span class="text-gray-800">
+              <span class="text-gray-800 dark:text-white">
                 {{ $crumbs['label'] }}
               </span>
             @endif
@@ -20,8 +20,8 @@
     </x-slot>
 
     <div class="px-6 py-4">
-        <div class="mb-3">
-        <div class="w-full flex items-center justify-between mb-3 px-2 py-2.5 bg-gray-50 shadow-md rounded">
+      <div class="mb-3">
+        <div class="w-full flex items-center justify-between mb-3 px-2 py-2.5 bg-gray-50 dark:bg-gray-800/50 dark:border dark:border-gray-700/40 shadow-md rounded">
           <button id="toggleAdd" class="px-5 py-1.5 text-white bg-sky-700 hover:bg-sky-800 rounded transition duration-150 font-semibold">
             Create New Item
           </button>
@@ -37,7 +37,7 @@
                   name="date1" 
                   id="date1"
                   value="{{ request('date1') }}"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg block w-full p-2.5"
+                  class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700/50 text-gray-900 dark:text-white text-xs rounded-lg block w-full p-2.5"
                 >
               </div>
             
@@ -50,7 +50,7 @@
                   name="date2" 
                   id="date2"
                   value="{{ request('date2') }}"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg block w-full p-2.5"
+                  class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700/50 text-gray-900 dark:text-white text-xs rounded-lg block w-full p-2.5"
                 >
               </div>
             </div>
@@ -72,17 +72,17 @@
         </div>
 
         {{-- ADD FORM --}}
-        <div id="Add" class="bg-white mb-3 p-5 rounded shadow-md hidden">
+        <div id="Add" class="bg-white dark:bg-gray-800/50 dark:border dark:border-gray-700/50 text-gray-900 dark:text-white/80 mb-3 p-5 rounded shadow-md hidden">
             <form action="{{ route('items.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="grid gap-4 grid-cols-2 sm:gap-3">
+                <div class="grid gap-4 grid-cols-3 sm:gap-3">
                     <div class="col-span-full">
-                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Nama Barang</label>
-                        <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="Nama Barang" required>
+                        <label for="name" class="block mb-2 text-sm font-medium">Nama Barang</label>
+                        <input type="text" name="name" id="name" class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700/50  text-sm rounded-lg block w-full p-2.5" placeholder="Nama Barang" required>
                     </div>
                     <div>
-                        <label for="category_id" class="block mb-2 text-sm font-medium text-gray-900">Kategori</label>
-                        <select id="category_id" name="category_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
+                        <label for="category_id" class="block mb-2 text-sm font-medium">Kategori</label>
+                        <select id="category_id" name="category_id" class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700/50  text-sm rounded-lg block w-full p-2.5">
                             <option value="" class="text-gray-400">- Kategori Barang -</option>
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -90,12 +90,12 @@
                         </select>
                     </div>
                     <div>
-                        <label for="total_stock" class="block mb-2 text-sm font-medium text-gray-900">Jumlah Stok</label>
-                        <input type="number" name="total_stock" id="total_stock" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="Stok Barang" required>
+                        <label for="total_stock" class="block mb-2 text-sm font-medium">Jumlah Stok</label>
+                        <input type="number" name="total_stock" id="total_stock" class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700/50 text-sm rounded-lg block w-full p-2.5" placeholder="Stok Barang" required>
                     </div>
                     <div>
-                        <label for="status" class="block mb-2 text-sm font-medium text-gray-900">Status</label>
-                        <select id="status" name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
+                        <label for="status" class="block mb-2 text-sm font-medium">Status</label>
+                        <select id="status" name="status" class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700/50 text-sm rounded-lg block w-full p-2.5">
                             <option value="1">Available</option>
                             <option value="0">Unavailable</option>
                         </select>
@@ -110,18 +110,18 @@
 
         {{-- EDIT FORM --}}
         @if($edit)
-        <div class="bg-white mb-3 p-5 rounded shadow-md">
+        <div class="bg-white dark:bg-gray-800/50 dark:border dark:border-gray-700/50 text-gray-900 dark:text-white/80 mb-3 p-5 rounded shadow-md">
             <form action="{{ route('items.update', $edit->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="grid gap-4 grid-cols-2 sm:gap-3">
                     <div>
-                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Nama Barang</label>
-                        <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="Nama Barang" required value="{{ $edit->name }}">
+                        <label for="name" class="block mb-2 text-sm font-medium">Nama Barang</label>
+                        <input type="text" name="name" id="name" class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700/50 text-sm rounded-lg block w-full p-2.5" placeholder="Nama Barang" required value="{{ $edit->name }}">
                     </div>
                     <div>
-                        <label for="category_id" class="block mb-2 text-sm font-medium text-gray-900">Kategori</label>
-                        <select id="category_id" name="category_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
+                        <label for="category_id" class="block mb-2 text-sm font-medium">Kategori</label>
+                        <select id="category_id" name="category_id" class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700/50 text-sm rounded-lg block w-full p-2.5">
                             <option value="{{ $edit->category_id }}" class="text-gray-400">{{ $edit->category->name }}</option>
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -129,12 +129,12 @@
                         </select>
                     </div>
                     <div>
-                        <label for="total_stock" class="block mb-2 text-sm font-medium text-gray-900">Jumlah Stok</label>
-                        <input type="number" name="total_stock" id="total_stock" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="Stok Barang" required value="{{ $edit->total_stock }}">
+                        <label for="total_stock" class="block mb-2 text-sm font-medium">Jumlah Stok</label>
+                        <input type="number" name="total_stock" id="total_stock" class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700/50 text-sm rounded-lg block w-full p-2.5" placeholder="Stok Barang" required value="{{ $edit->total_stock }}">
                     </div>
                     <div>
-                        <label for="status" class="block mb-2 text-sm font-medium text-gray-900">Status</label>
-                        <select id="status" name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
+                        <label for="status" class="block mb-2 text-sm font-medium">Status</label>
+                        <select id="status" name="status" class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700/50 text-sm rounded-lg block w-full p-2.5">
                             <option value="1">Available</option>
                             <option value="0">Unavailable</option>
                         </select>
@@ -156,7 +156,7 @@
               name="search" 
               value="{{ request('search') }}" 
               placeholder="Search..." 
-              class="border border-gray-300 rounded px-4 py-2"
+              class="dark:bg-gray-800 border border-gray-300 dark:border-gray-700/60 dark:text-white rounded px-4 py-2"
             >
             <button type="submit" class="bg-sky-700 text-white h-10 w-10 rounded flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
@@ -164,8 +164,8 @@
               </svg>
             </button>
           </div> 
-          <select name="sort" onchange="this.form.submit()" class="border border-gray-300 rounded *:">
-            <option value="" class="text-gray-400">Sort By</option>
+          <select name="sort" onchange="this.form.submit()" class="dark:bg-gray-800 border border-gray-300 dark:border-gray-700/60 dark:text-white rounded">
+            <option value="" class="text-gray-400 dark:text-gray-500">Sort By</option>
             <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest</option>
             <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
             <option value="largest" {{ request('sort') == 'largest' ? 'selected' : '' }}>Largest</option>
@@ -191,11 +191,11 @@
           </div>
         @endif
 
-        <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3">
+        <div class="flex flex-col bg-white dark:bg-gray-800/50 shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 dark:border-gray-700/50 p-3 rounded">
           <div class="-m-1.5 overflow-x-auto">
             <div class="p-1.5 min-w-full inline-block align-middle">
               <div class="overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                   <thead>
                     <tr>
                       <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">#</th>
@@ -211,15 +211,15 @@
                   <tbody class="divide-y divide-gray-200">
                     @forelse ($items as $data)
                       <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $loop->iteration }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
                           {{ $data->category ? $data->category->name : '-' }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->available }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->unavailable }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->total_stock }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->status ? 'Available' : 'Unavailable' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $data->name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $data->available }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $data->unavailable }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $data->total_stock }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $data->status ? 'Available' : 'Unavailable' }}</td>
                         <td>
                           <div class="flex justify-end items-center gap-1">
                             <a href="{{ route('items.index', ['edit' => $data->id]) }}">

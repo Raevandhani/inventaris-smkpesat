@@ -29,16 +29,14 @@ class RoleSeeder extends Seeder
         }
 
         $rolesWithPermissions = [
+            'none' => '',
+
             'student' => [
                 'borrow.request',
                 'borrow.view',
                 'items.view',
             ],
-            'teacher' => [
-                'borrow.request',
-                'borrow.view',
-                'items.view',
-            ],
+            
             'admin' => $perms,
         ];
 

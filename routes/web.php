@@ -121,11 +121,14 @@ Route::prefix('maintains')->name('maintains.')->middleware(['auth'])->group(func
         ->name('export.pdf');
 });
 
-
 Route::prefix('/')->middleware(['auth'])->group(function () {
     Route::resource('roles', RolesController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('locations', LocationController::class);
+});
+
+Route::fallback(function () {
+    return redirect()->back();
 });
 
 require __DIR__.'/auth.php';

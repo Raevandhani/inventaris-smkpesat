@@ -5,7 +5,7 @@
 
     <div class="mt-5 flex items-center">
         <a href="/">
-            <x-primary-button class="scale-110 bg-sky-700 hover:bg-sky-800">
+            <x-primary-button class="scale-110 bg-sky-700 dark:bg-sky-700 dark:text-white dark:hover:text-white/50 hover:bg-sky-800">
                 {{ __('Back') }}
             </x-primary-button>
         </a>

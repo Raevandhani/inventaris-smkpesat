@@ -7,7 +7,7 @@
                   {{ $crumbs['label'] }}
                 </a>
             @else
-              <div class="text-gray-800">
+              <div class="text-gray-800 dark:text-white">
                 {{ $crumbs['label'] }}
               </div>
             @endif
@@ -21,13 +21,13 @@
 
     <div class="px-6 py-4">
 
-      <div class="w-full flex items-center justify-between p-2 bg-gray-50 shadow-md rounded mb-3">
-        <button id="toggleAdd" class="px-5 py-1.5 text-white bg-sky-700 hover:bg-sky-800 rounded transition duration-150 font-semibold">
+      <div class="w-full flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800/50 dark:border dark:border-gray-800 shadow-md rounded mb-3">
+        <button id="toggleAdd" class="px-5 py-1.5 text-white bg-sky-700 dark:bg-sky-900 hover:bg-sky-800 dark:hover:bg-sky-950 rounded transition duration-150 font-semibold">
           New Roles
         </button>
 
         <form method="GET" action="{{ route('roles.index') }}" class="flex items-center">
-          <select name="sort" onchange="this.form.submit()" class="border border-gray-300 rounded *:">
+          <select name="sort" onchange="this.form.submit()" class="border border-gray-300 dark:border-gray-700/30 dark:bg-gray-800 dark:text-white rounded">
             <option value="" class="text-gray-400">Sort By</option>
             <option value="most_user" {{ request('sort') == 'most_user' ? 'selected' : '' }}>Most User</option>
             <option value="least_user" {{ request('sort') == 'least_user' ? 'selected' : '' }}>Least User</option>
@@ -51,7 +51,7 @@
       @endif
 
 
-      <div id="Add" class="bg-white mb-3 p-5 rounded shadow-md hidden">
+      <div id="Add" class="bg-white dark:bg-gray-800 mb-3 p-5 rounded shadow-md hidden">
         <form action="{{ route('roles.store') }}" method="POST" class="flex flex-col gap-4 w-full">
           @csrf
           <input
@@ -60,28 +60,28 @@
             value="{{ old('name') }}"
             placeholder="Enter role name"
             required
-            class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            class="px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm dark:text-white"
           >
           <div>
-              <label class="block font-medium text-sm text-gray-700 mb-2">Permissions</label>
+              <label class="block font-medium text-sm text-gray-700 dark:text-gray-600 mb-2">Permissions</label>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
                   @foreach($permissions as $permission)
-                      <label class="flex items-center gap-2">
-                          <input type="checkbox" name="permissions[]" value="{{ $permission->name }}">
-                          <span>{{ $permission->name }}</span>
-                      </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="permissions[]" value="{{ $permission->name }}" class="dark:bg-gray-800 dark:border dark:border-gray-600">
+                        <span class="dark:text-white">{{ $permission->name }}</span>
+                    </label>
                   @endforeach
               </div>
           </div>
         
           <div class="flex gap-2">
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Add</button>
+              <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-sky-800 dark:hover:bg-sky-900 text-white rounded transition">Add</button>
           </div>
         </form>
       </div>
 
       @if($editRole)
-      <div class="bg-white mb-3 p-5 rounded shadow-md">
+      <div class="bg-white dark:bg-gray-800 mb-3 p-5 rounded shadow-md">
         <form action="{{ route('roles.update', $editRole->id) }}" method="POST" class="flex flex-col gap-4 w-full">
           @csrf
           @method('PUT')
@@ -90,7 +90,7 @@
             name="name"
             value="{{ old('name', $editRole->name) }}"
             required
-            class="px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            class="px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm dark:text-white"
           >
           <div>
               <label class="block font-medium text-sm text-gray-700 mb-2">Permissions</label>
@@ -98,29 +98,29 @@
                   @foreach($permissions as $permission)
                       <label class="flex items-center gap-2">
                           <input type="checkbox" 
-                                 name="permissions[]" 
+                                 name="permissions[]"
                                  value="{{ $permission->name }}"
+                                 class="dark:bg-gray-800 dark:border dark:border-gray-600"
                                  {{ $editRole->hasPermissionTo($permission->name) ? 'checked' : '' }}>
-                          <span>{{ $permission->name }}</span>
+                          <span class="dark:text-gray-200">{{ $permission->name }}</span>
                       </label>
                   @endforeach
               </div>
           </div>
         
-          {{-- Buttons --}}
           <div class="flex gap-2">
-            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Update</button>
-            <a href="{{ route('roles.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
+            <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 transition-all text-white rounded">Update</button>
+            <a href="{{ route('roles.index') }}" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 transition-all text-white rounded">Cancel</a>
           </div>
         </form>
       </div>
       @endif
 
-        <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3">
+        <div class="flex flex-col bg-white dark:bg-gray-800/50 shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 dark:border-gray-700/50 p-3 rounded">
           <div class="-m-1.5 overflow-x-auto">
             <div class="p-1.5 min-w-full inline-block align-middle">
               <div class="overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200 text-center">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-center">
                   <thead>
                     <tr>
                       <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase w-16">#</th>
@@ -134,11 +134,11 @@
                   <tbody>
                     @foreach ($roles as $data)
                       <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 w-16">{{ $loop->iteration }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ Str::ucfirst($data->name) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->users->count() }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->permissions->count() }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-white/70 w-16">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-white/70">{{ Str::ucfirst($data->name) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-white/70">{{ $data->name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-white/70">{{ $data->users->count() }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-white/70">{{ $data->permissions->count() }}</td>
                         
                         <td>
                           <div class="flex items-center gap-1">

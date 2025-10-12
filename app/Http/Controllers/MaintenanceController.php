@@ -289,4 +289,15 @@ class MaintenanceController extends Controller
 
         return $response;
     }
+
+    // Unused
+    public function create(){
+        return redirect()->route('maintains.index');
+    }
+    public function show(){
+        return redirect()->route('maintains.index');
+    }
+    public function edit(){
+        return redirect()->route('maintains.index');
+    }
 }

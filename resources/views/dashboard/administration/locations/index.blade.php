@@ -7,7 +7,7 @@
                   {{ $crumbs['label'] }}
                 </a>
             @else
-              <div class="text-gray-800">
+              <div class="text-gray-800 dark:text-white">
                 {{ $crumbs['label'] }}
               </div>
             @endif
@@ -30,10 +30,10 @@
                       name="name"
                       value="{{ old('name', $edit->name) }}"
                       required
-                      class="px-3 py-2.5 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      class="px-3 py-2.5 border border-gray-300 dark:border-gray-700/50 dark:bg-gray-800/50 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm dark:text-white"
                   >
-                  <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Update</button>
-                  <a href="{{ route('locations.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</a>
+                  <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-white rounded transition-all">Update</button>
+                  <a href="{{ route('locations.index') }}" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded transition-all">Cancel</a>
               </form>
           @else
               <form action="{{ route('locations.store') }}" method="POST" class="flex items-center gap-2">
@@ -44,9 +44,9 @@
                       value="{{ old('name') }}"
                       placeholder="Enter location name"
                       required
-                      class="px-3 py-2.5 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      class="px-3 py-2.5 border border-gray-300 dark:border-gray-700/50 dark:bg-gray-800/50 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm dark:text-white"
                   >
-                  <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Add</button>
+                  <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-sky-700 dark:hover:bg-sky-800 text-white rounded transition-all">Add</button>
               </form>
           @endif
         </div>
@@ -63,11 +63,12 @@
               {{ session('deleted') }}
           </div>
         @endif
-        <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3">
+
+        <div class="flex flex-col bg-white dark:bg-gray-800/50 shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 dark:border-gray-700/50 p-3 rounded">
           <div class="-m-1.5 overflow-x-auto">
             <div class="p-1.5 min-w-full inline-block align-middle">
               <div class="overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                   <thead>
                     <tr>
                       <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase w-16">#</th>
@@ -79,9 +80,9 @@
                   <tbody>
                     @foreach ($locations as $data)
                       <tr>
-                        <td class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium text-gray-800 w-16">{{ $loop->iteration }}</td>
-                        <td class="px-6 py-4 text-start whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->name }}</td>
-                        <td class="px-6 py-4 text-start whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->borrow_count }}</td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium text-gray-800 dark:text-white/70 w-16">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-4 text-start whitespace-nowrap text-sm font-medium text-gray-800 dark:text-white/70">{{ $data->name }}</td>
+                        <td class="px-6 py-4 text-start whitespace-nowrap text-sm font-medium text-gray-800 dark:text-white/70">{{ $data->borrow_count }}</td>
                         <td>
                           <div class="flex items-center gap-1">
                             <a href="{{ route('locations.index', ['edit' => $data->id]) }}">

@@ -8,7 +8,7 @@ class Borrow extends Model
 {
     protected $fillable = [
         'user_id', 'item_id', 'location_id', 'quantity',
-        'borrow_date', 'return_date', 'status'
+        'borrow_date', 'return_date', 'status', 'user_delete'
     ];
 
     protected $casts = [

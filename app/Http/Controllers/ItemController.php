@@ -252,12 +252,12 @@ class ItemController extends Controller
 
     // Unused
     public function create(){
-        return redirect()->route('categories.index');
+        return redirect()->route('items.index');
     }
     public function show(){
-        return redirect()->route('categories.index');
+        return redirect()->route('items.index');
     }
     public function edit(){
-        return redirect()->route('categories.index');
+        return redirect()->route('items.index');
     }
 }

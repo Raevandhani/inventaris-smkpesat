@@ -7,20 +7,18 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
+    <body class="font-sans text-gray-900 antialiased dark:text-gray-100">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
             <div class="flex flex-col items-center space-y-2">
                 <a href="/">
                     <img src="/assets/logo-smk-light.png" alt="smkpesat-dark" class="w-40">
                 </a>
-                <h2 class="text-center font-semibold text-sky-900 text-lg">
+                <h2 class="text-center font-semibold text-sky-900 text-lg dark:text-sky-300">
                     Welcome to Pesat Inventory System
                 </h2>
             </div>

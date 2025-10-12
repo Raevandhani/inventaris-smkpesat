@@ -9,7 +9,7 @@
     @role('admin')
         <div class="mb-3">
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
-                <article class="flex  items-center gap-5 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/3">
+                <article class="flex  items-center gap-5 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-800/50">
                     <div class="inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-white/90">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
@@ -25,7 +25,7 @@
                     </div>
                 </article>
 
-                <article class="flex items-center gap-5 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/3">
+                <article class="flex items-center gap-5 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-800/50">
                     <div class="inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-white/90">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
@@ -42,7 +42,7 @@
                     </div>
                 </article>
 
-                <article class="flex items-center gap-5 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/3">
+                <article class="flex items-center gap-5 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-800/50">
                     <div class="inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-white/90">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.25-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z" />
@@ -60,10 +60,10 @@
                 </article>
             </div>
         </div>
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <h2 class="text-xl font-semibold mb-4">Currently Borrowed Items</h2>
+        <div class="bg-white dark:bg-gray-800/50 dark:border dark:border-gray-700/50 shadow-md rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4 dark:text-white">Currently Borrowed Items</h2>
             <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-                <thead class="bg-gray-100 text-gray-700 text-sm">
+                <thead class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-white/90 text-sm">
                     <tr>
                         <th class="px-4 py-2 text-left">Item</th>
                         <th class="px-4 py-2 text-left">Quantity</th>
@@ -74,7 +74,7 @@
                 </thead>
                 <tbody class="text-sm">
                     @forelse($borrowedItems as $data)
-                        <tr class="border-t">
+                        <tr class="border-t dark:border-gray-700 dark:bg-gray-800 dark:text-white/70">
                             <td class="px-4 py-2">{{ $data->item->name ?? 'N/A' }}</td>
                             <td class="px-4 py-2">{{ $data->quantity }}</td>
                             <td class="px-4 py-2">{{ $data->location->name ?? 'N/A' }}</td>
@@ -94,21 +94,21 @@
     @endrole
 
     @unlessrole('admin')
-
         @canany(['borrow.view', 'borrow.request'])
-        <div class="w-full flex items-center justify-between mb-3 px-2 py-2.5 bg-gray-50 shadow-md rounded">
+        {{-- Control Buttons --}}
+        <div class="w-full flex items-center justify-between mb-3 px-2 py-2.5 bg-gray-50 shadow-md rounded dark:bg-gray-800 dark:shadow-none dark:border dark:border-gray-700">
             @can('borrow.request')
-            <button id="toggleAdd" class="px-5 py-1.5 text-white bg-sky-700 hover:bg-sky-800 rounded transition duration-150 font-semibold">
-              Request Borrow
+            <button id="toggleAdd" class="px-5 py-1.5 text-white bg-sky-700 hover:bg-sky-800 rounded transition duration-150 font-semibold dark:bg-sky-600 dark:hover:bg-sky-700">
+                Request Borrow
             </button>
             @endcan
 
             @can('borrow.view')
             <div>
-                <button id="showHistory" class="px-5 py-1.5 text-white bg-blue-600 hover:bg-blue-700 rounded transition duration-150 font-semibold">
+                <button id="showHistory" class="px-5 py-1.5 text-white bg-blue-600 hover:bg-blue-700 rounded transition duration-150 font-semibold dark:bg-blue-500 dark:hover:bg-blue-600">
                     Show History
                 </button>
-                <button id="showBorrow" class="px-5 py-1.5 text-white bg-green-600 hover:bg-green-700 rounded transition duration-150 font-semibold hidden">
+                <button id="showBorrow" class="px-5 py-1.5 text-white bg-green-600 hover:bg-green-700 rounded transition duration-150 font-semibold hidden dark:bg-green-500 dark:hover:bg-green-600">
                     Show Table
                 </button>
             </div>
@@ -117,26 +117,27 @@
         @endcanany
 
         @can('borrow.request')
-        <div id="Add" class="bg-white mb-3 p-5 rounded shadow-md hidden">
+        {{-- Borrow Request Form --}}
+        <div id="Add" class="bg-white mb-3 p-5 rounded shadow-md hidden dark:bg-gray-800 dark:text-gray-200 dark:shadow-none dark:border dark:border-gray-700">
           <form action="{{ route('borrows.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="redirect" value="dashboard">
             <div class="grid gap-4 grid-cols-2 sm:gap-3">
               <div>
-                <label for="item_id" class="block mb-2 text-sm font-medium text-gray-900">Barang Dipinjam</label>
-                <select id="item_id" name="item_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
-                    <option value="" class="text-gray-400">-- Barang --</option>
+                <label for="item_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Barang Dipinjam</label>
+                <select id="item_id" name="item_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
+                    <option value="" class="text-gray-400 dark:text-gray-400">-- Barang --</option>
                     @foreach ($items as $data)
                         <option value="{{ $data->id }}">{{ $data->name }}</option>
                     @endforeach
                 </select>
               </div>
               <div>
-                <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900">Jumlah Dipinjam</label>
-                <input type="number" name="quantity" id="quantity" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="Stok Barang" required>
+                <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Jumlah Dipinjam</label>
+                <input type="number" name="quantity" id="quantity" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Stok Barang" required>
               </div>
               <div>
-                <label for="borrow_date" class="block mb-2 text-sm font-medium text-gray-900">
+                <label for="borrow_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                   Tanggal Pinjam
                 </label>
 
@@ -145,15 +146,15 @@
                   name="borrow_date" 
                   id="borrow_date"
                   value="{{ now()->format('Y-m-d\TH:i') }}" 
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                   required
                 >
               </div>
 
               <div>
-                  <label for="location_id" class="block mb-2 text-sm font-medium text-gray-900">Lokasi</label>
-                  <select id="location_id" name="location_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
-                      <option value="" class="text-gray-400">Lokasi Peminjaman</option>
+                  <label for="location_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Lokasi</label>
+                  <select id="location_id" name="location_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
+                      <option value="" class="text-gray-400 dark:text-gray-400">Lokasi Peminjaman</option>
                       @foreach ($locations as $data)
                         <option value="{{ $data->id }}">{{ $data->name }}</option>
                       @endforeach
@@ -162,7 +163,7 @@
 
 
             </div>
-              <button type="submit" class="inline-flex items-center px-5 py-2 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-teal-700 rounded-lg focus:ring-4 hover:bg-teal-800">
+              <button type="submit" class="inline-flex items-center px-5 py-2 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-teal-700 rounded-lg focus:ring-4 hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700">
                 Submit
               </button>
           </form>
@@ -170,33 +171,34 @@
         @endcan
 
         @can('items.view')
-        <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3 mb-3">
+        {{-- Available Items Table --}}
+        <div class="flex flex-col bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1)] border border-gray-200 p-3 mb-3 dark:bg-gray-800 dark:border-gray-700 dark:shadow-none">
           <div class="-m-1.5 overflow-x-auto">
             <div class="px-1.5 py-4 min-w-full inline-block align-middle">
               <div class="overflow-hidden">
-                <h2 class="text-xl font-semibold ml-4 mb-4">Available Items</h2>
-                <table class="min-w-full divide-y divide-gray-200">
+                <h2 class="text-xl font-semibold ml-4 mb-4 text-gray-900 dark:text-gray-100">Available Items</h2>
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                   <thead>
                     <tr>
-                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">#</th>
-                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Category</th>
-                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Name</th>
-                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Available</th>
+                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">#</th>
+                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Category</th>
+                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Name</th>
+                      <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Available</th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-gray-200">
+                  <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse ($items as $data)
                       <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $loop->iteration }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
                           {{ $data->category ? $data->category->name : '-' }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ $data->available }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $data->name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $data->available }}</td>
                       </tr>
                     @empty
                       <tr>
-                        <td colspan="8" class="px-4 py-3 text-center text-gray-500">
+                        <td colspan="8" class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">
                             No result found
                         </td>
                       </tr>
@@ -205,6 +207,7 @@
                   </tbody>
                 </table>
                 <div class="mt-4">
+                  {{-- Assuming $items->links() also renders dark mode compatible classes or you can style the links specifically if needed --}}
                   {{ $items->links() }}
                 </div>
               </div>
@@ -214,11 +217,12 @@
         @endcan
 
         @can('borrow.view')
+        {{-- Current Borrowed Items Table --}}
         <div id="borrow">
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <h2 class="text-xl font-semibold mb-4">Borrowed Items</h2>
-                <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-                    <thead class="bg-gray-100 text-gray-700 text-sm">
+            <div class="bg-white shadow-md rounded-lg p-6 dark:bg-gray-800 dark:text-gray-200 dark:shadow-none dark:border dark:border-gray-700">
+                <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Borrowed Items</h2>
+                <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden dark:border-gray-700">
+                    <thead class="bg-gray-100 text-gray-700 text-sm dark:bg-gray-700 dark:text-gray-300">
                         <tr>
                             <th class="px-4 py-2 text-left">#</th>
                             <th class="px-4 py-2 text-left">Items</th>
@@ -229,15 +233,15 @@
                             <th class="px-4 py-2 text-left">Status</th>
                         </tr>
                     </thead>
-                    <tbody class="text-sm">
+                    <tbody class="text-sm divide-y divide-gray-200 dark:divide-gray-700">
                         @forelse ($borrows->whereIn('status', ['pending', 'ongoing'])->sortBy(fn($b) => array_search($b->status, ['pending', 'ongoing'])) as $data)
-                            <tr class="border-t">
-                                <td class="px-4 py-2">{{ $loop->iteration }}</td>
-                                <td class="px-4 py-2">{{ $data->item->name }}</td>
-                                <td class="px-4 py-2">{{ $data->location?->name }}</td>
-                                <td class="px-4 py-2">{{ $data->quantity }}</td>
-                                <td class="px-4 py-2">{{ $data->borrow_date->timezone('Asia/Jakarta')->format('d M Y - H:i') }}</td>
-                                <td class="px-4 py-2">
+                            <tr class="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                                <td class="px-4 py-2 text-gray-800 dark:text-gray-200">{{ $loop->iteration }}</td>
+                                <td class="px-4 py-2 text-gray-800 dark:text-gray-200">{{ $data->item->name }}</td>
+                                <td class="px-4 py-2 text-gray-800 dark:text-gray-200">{{ $data->location?->name }}</td>
+                                <td class="px-4 py-2 text-gray-800 dark:text-gray-200">{{ $data->quantity }}</td>
+                                <td class="px-4 py-2 text-gray-800 dark:text-gray-200">{{ $data->borrow_date->timezone('Asia/Jakarta')->format('d M Y - H:i') }}</td>
+                                <td class="px-4 py-2 text-gray-800 dark:text-gray-200">
                                     @if ($data->return_date)
                                         {{ $data->return_date->timezone('Asia/Jakarta')->format('d M Y - H:i') }}
                                     @else
@@ -245,9 +249,9 @@
                                     @endif
                                 </td>
                                 @php
-                                    $statusClass = match($data->status) {   
-                                        'ongoing'  => 'bg-sky-100 text-sky-500',
-                                        default    => 'bg-orange-100 text-orange-500',
+                                    $statusClass = match($data->status) {  
+                                        'ongoing'   => 'bg-sky-100 text-sky-500 dark:bg-sky-900 dark:text-sky-300',
+                                        default     => 'bg-orange-100 text-orange-500 dark:bg-orange-900 dark:text-orange-300', // pending
                                     };
                                 @endphp
                                 <td class="px-4 py-2">
@@ -258,7 +262,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="px-4 py-3 text-center text-gray-500">
+                                <td colspan="8" class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">
                                     No items are currently borrowed.
                                 </td>
                             </tr>
@@ -267,16 +271,17 @@
                 </table>
             </div>
             <div class="mt-4">
-              {{ $borrows->links() }}
+                {{-- Assuming $borrows->links() also renders dark mode compatible classes or you can style the links specifically if needed --}}
+                {{ $borrows->links() }}
             </div>
         </div>
 
-        {{-- History --}}
+        {{-- History Table --}}
         <div class="hidden" id="history">
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <h2 class="text-xl font-semibold mb-4">History</h2>
-                <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-                    <thead class="bg-gray-100 text-gray-700 text-sm">
+            <div class="bg-white shadow-md rounded-lg p-6 dark:bg-gray-800 dark:text-gray-200 dark:shadow-none dark:border dark:border-gray-700">
+                <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">History</h2>
+                <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden dark:border-gray-700">
+                    <thead class="bg-gray-100 text-gray-700 text-sm dark:bg-gray-700 dark:text-gray-300">
                         <tr>
                             <th class="px-4 py-2 text-left">#</th>
                             <th class="px-4 py-2 text-left">Items</th>
@@ -288,21 +293,21 @@
                             <th class="px-4 py-2 text-left">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="text-sm">
+                    <tbody class="text-sm divide-y divide-gray-200 dark:divide-gray-700">
                         @forelse (
                             $borrows
                                 ->whereIn('status', ['declined', 'done'])
-                                ->where('user_deleted', false)
+                                ->where('user_delete', false)
                                 ->sortBy(fn($b) => array_search($b->status, ['declined', 'done']))
                             as $data
                         )
-                            <tr class="border-t">
-                                <td class="px-4 py-2">{{ $loop->iteration }}</td>
-                                <td class="px-4 py-2">{{ $data->item->name }}</td>
-                                <td class="px-4 py-2">{{ $data->location?->name }}</td>
-                                <td class="px-4 py-2">{{ $data->quantity }}</td>
-                                <td class="px-4 py-2">{{ $data->borrow_date->timezone('Asia/Jakarta')->format('d M Y - H:i') }}</td>
-                                <td class="px-4 py-2">
+                            <tr class="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                                <td class="px-4 py-2 text-gray-800 dark:text-gray-200">{{ $loop->iteration }}</td>
+                                <td class="px-4 py-2 text-gray-800 dark:text-gray-200">{{ $data->item->name }}</td>
+                                <td class="px-4 py-2 text-gray-800 dark:text-gray-200">{{ $data->location?->name }}</td>
+                                <td class="px-4 py-2 text-gray-800 dark:text-gray-200">{{ $data->quantity }}</td>
+                                <td class="px-4 py-2 text-gray-800 dark:text-gray-200">{{ $data->borrow_date->timezone('Asia/Jakarta')->format('d M Y - H:i') }}</td>
+                                <td class="px-4 py-2 text-gray-800 dark:text-gray-200">
                                     @if ($data->return_date)
                                         {{ $data->return_date->timezone('Asia/Jakarta')->format('d M Y - H:i') }}
                                     @else
@@ -310,10 +315,10 @@
                                     @endif
                                 </td>
                                 @php
-                                    $statusClass = match($data->status) {   
-                                        'done' => 'bg-emerald-100 text-emerald-500',
-                                        'declined'  => 'bg-red-100 text-red-500',
-                                        default    => '',
+                                    $statusClass = match($data->status) {  
+                                        'done' => 'bg-emerald-100 text-emerald-500 dark:bg-emerald-900 dark:text-emerald-300',
+                                        'declined'  => 'bg-red-100 text-red-500 dark:bg-red-900 dark:text-red-300',
+                                        default     => '',
                                     };
                                 @endphp
                                 <td class="px-4 py-2">
@@ -326,14 +331,14 @@
                                         <form action="{{ route('borrows.destroy', $data->id) }}" method="POST">
                                           @csrf
                                           @method('DELETE')
-                                          <button class="px-5 py-1 text-sm text-white bg-red-600 hover:bg-red-700 rounded">Delete</button>
+                                          <button class="px-5 py-1 text-sm text-white bg-red-600 hover:bg-red-700 rounded dark:bg-red-700 dark:hover:bg-red-800">Delete</button>
                                         </form>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="px-4 py-3 text-center text-gray-500">
+                                <td colspan="8" class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">
                                     No History Found
                                 </td>
                             </tr>
@@ -342,7 +347,8 @@
                 </table>
             </div>
             <div class="mt-4">
-              {{ $borrows->links() }}
+                {{-- Assuming $borrows->links() also renders dark mode compatible classes or you can style the links specifically if needed --}}
+                {{ $borrows->links() }}
             </div>
         </div>
         @endcan

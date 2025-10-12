@@ -1,7 +1,7 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
     <div class="w-full">
         <div class="flex justify-between items-center h-16 px-12">
-            <div class="font-bold">
+            <div class="font-bold text-black dark:text-white">
                 PESAT INVENTORY SYSTEM
             </div>
             <div class="flex gap-3 md:hidden">
