@@ -27,13 +27,13 @@ class AuthenticatedSessionController extends Controller
 
         if (!$user || !\Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
             return back()->withErrors([
-                'login' => 'Email or Password is incorrect',
+                'error' => 'Email or Password is incorrect',
             ]);
         }
 
         if (!$user->is_verified) {
             return back()->withErrors([
-                'login' => 'Your account is not verified.',
+                'error' => 'Your account is not verified.',
             ]);
         }
 
